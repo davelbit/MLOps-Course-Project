@@ -53,10 +53,10 @@ class Dataset_fetcher(Dataset):
         return (len(self.img_paths))
 
 
-DS=Dataset_fetcher('../../data/raw/COVID19_Pneumonia_Normal_Chest_Xray_PA_Dataset')
-loader = torch.utils.data.DataLoader(DS, shuffle=False, num_workers=0, batch_size=3)
+# DS=Dataset_fetcher('../../data/raw/COVID19_Pneumonia_Normal_Chest_Xray_PA_Dataset')
+# loader = torch.utils.data.DataLoader(DS, shuffle=False, num_workers=0, batch_size=3)
 
-dataiter = iter(loader)
-images, labels = dataiter.next()
+# dataiter = iter(loader)
+# images, labels = dataiter.next()
 
-print( images.shape,labels.shape)
+# print( images.shape,labels.shape)
