@@ -1,7 +1,12 @@
 MLOps-Course-Project
 ==============================
 
-A short description of the project.
+The project is a classification task between Covid-19, Pneumonia and unaffected patients. The task is achieved by taking X-ray images of the patients and passing it through a 
+convolutional neural network (Architecture described below) which then outputs the class the X-ray of the patient belongs to. The CNN was trained on 4575 samples of X-rays with
+an equal distribution of samples from each class to avoid training biases.
+
+Convolutional Neural Network Architecture
+------------
 
 Project Organization
 ------------
