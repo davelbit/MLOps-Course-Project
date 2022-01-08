@@ -1,9 +1,19 @@
 MLOps-Course-Project
 ==============================
+[Checkout the course](https://skaftenicki.github.io/dtu_mlops/)
 
-The project is a classification task between Covid-19, Pneumonia and unaffected patients. The task is achieved by taking X-ray images of the patients and passing it through a 
-convolutional neural network (Architecture described below) which then outputs the class the X-ray of the patient belongs to. The CNN was trained on 4575 samples of X-rays with
-an equal distribution of samples from each class to avoid training biases.
+The goal of this project is to get familiar with the best practices of MLOps. In the center is not the output of a neural network, everything around it as: code structure, code/data/model version control, logging, debugging, containerisation, deployment, monitoring...
+
+
+The project is build around a classification task. Different X-Rays of patients lungs will be classified in covid-19, pneumonia and normal. 
+The dataset is from [Mendeley Data](https://data.mendeley.com/datasets/jctsfj2sfn/1) where all classes are represented equally.
+The images are black and white with either 1 or 3 Channels.
+A convolutional neural network (CNN) will be trained on 80% of the total 4575 samples. Tests will be performed on th eremaining 20%.
+
+In this project the framework [Kornia](https://github.com/kornia/kornia) will be used primarily for data preprocessing and augmentation. (Maybe we find a usecase for post processing.)
+
+Concepts and tools to be used:
+
 
 Convolutional Neural Network Architecture
 ------------
