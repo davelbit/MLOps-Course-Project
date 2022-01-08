@@ -1,5 +1,6 @@
 MLOps-Course-Project
 ==============================
+
 [Checkout the course](https://skaftenicki.github.io/dtu_mlops/)
 
 The goal of this project is to get familiar with the best practices of MLOps. In the center is not the output of a neural network, everything around it as: code structure, code/data/model version control, logging, debugging, containerisation, deployment, monitoring...
@@ -13,6 +14,14 @@ A convolutional neural network (CNN) will be trained on 80% of the total 4575 sa
 In this project the framework [Kornia](https://github.com/kornia/kornia) will be used primarily for data preprocessing and augmentation. (Maybe we find a usecase for post processing.)
 
 Concepts and tools to be used:
+* codestructure : [Cookiecutter](https://drivendata.github.io/cookiecutter-data-science/)
+* Typehinmting?
+* Docker
+* Data Version Control via Google Drive
+* experiment logging with hydra+omegaconf
+* 
+*
+*
 
 
 Convolutional Neural Network Architecture
@@ -64,9 +73,11 @@ Project Organization
     │   └── visualization  <- Scripts to create exploratory and results oriented visualizations
     │       └── visualize.py
     │
-    └── tox.ini            <- tox file with settings for running tox; see tox.readthedocs.io
+    └── tox.ini            <- tox file with settings for running tox; s3ee tox.readthedocs.io
 
 
 --------
 
 <p><small>Project based on the <a target="_blank" href="https://drivendata.github.io/cookiecutter-data-science/">cookiecutter data science project template</a>. #cookiecutterdatascience</small></p>
+
+###### Project directory structure is based on the [cookiecutter data science project template](https://drivendata.github.io/cookiecutter-data-science/). #cookiecutterdatascience</small></p>
