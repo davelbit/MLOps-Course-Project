@@ -46,7 +46,6 @@ class XrayClassifier(nn.Module):
         x = self.bn1(x)
         x = self.dropout(self.relu1(x))
         x = self.pool(x)
-
         x = self.conv2(x)
         x = self.dropout(self.relu2(x))
         x = self.conv3(x)
