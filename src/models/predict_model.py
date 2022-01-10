@@ -22,9 +22,6 @@ import torch
 from model_architecture import XrayClassifier
 from torch import nn
 
-# load hyperparameters
-# config = OmegaConf.load('config.yaml')
-
 
 def get_model_from_checkpoint(path: str) -> nn.Module:
     """Returns a loaded model from checkpoint"""
@@ -32,7 +29,6 @@ def get_model_from_checkpoint(path: str) -> nn.Module:
     from src.models.model_architecture import XrayClassifier
 
     if not os.path.exists(path):
-        print("something")
         raise FileNotFoundError
 
     model = XrayClassifier()
