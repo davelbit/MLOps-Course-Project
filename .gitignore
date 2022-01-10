@@ -4,6 +4,9 @@ data/external/*
 data/processed/*
 data/interim/*
 
+# badges
+interrogate_badge.svg
+
 # Byte-compiled / optimized / DLL files
 __pycache__/
 *.py[cod]
