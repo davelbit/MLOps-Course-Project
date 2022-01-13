@@ -14,6 +14,8 @@ import numpy as np
 import requests
 from tqdm import tqdm
 import numpy as np
+from PIL import Image, ImageEnhance
+import matplotlib.pyplot as plt
 
 import kornia as K
 import cv2
@@ -32,15 +34,10 @@ chunk_size : int =1024):
     foldername : unzipped foldername
     inspired by: https://gist.github.com/nikhilkumarsingh/d29c1fdec0f4e266e53137d96b52e289
     """
-    print(os.getcwd())
-    print(os.path.isdir(PATH))
-    print(os.listdir(PATH))
+
     if PATH[-1] != '/':
         PATH.append('/')
     
-    print()
-    print(PATH+filename)
-    print()
 
     download=True
     extract=True
@@ -56,12 +53,29 @@ chunk_size : int =1024):
             for data in tqdm(iterable = r.iter_content(chunk_size = chunk_size), total = total_size/chunk_size, unit = 'KB'):
                 f.write(data)
         print("Download complete!")
+        del r
 
     if extract:
         z=zipfile.ZipFile(PATH+filename)
         z.extractall(PATH)
+        del z
 
-def preprocess(path : str):
+class check_size_and_gray(object):
+    def __init__(self,transform):
+        self.transform=transform
+    def __call__(self,img):
+        shape=img.shape
+        if shape[0]==3:
+            img=self.transform(img)
+        elif shape[0]==1:
+            pass
+        else:
+            nonezero_layers=[i for i in range(shape[0]) if not (img[i]==img[i][0,0]).all()]
+            # assert len(nonezero_layers) ==3
+            img=self.transform(img[nonezero_layers,:,:][:3])
+        return img
+
+def preprocess(path : str,plotsample : bool = False, output_filepath : str = 'data/preprocessed/covid_not_norm/'):
     classes=[ name for name in os.listdir(path) if os.path.isdir(os.path.join(path, name)) ]
     classes=np.sort(classes)
     class_map={name:c for c,name in enumerate(classes)}
@@ -74,59 +88,92 @@ def preprocess(path : str):
             img_paths.append(path_+'/'+file_name)
             labels.append(class_map[class_name])
     
-    resize=torchvision.transforms.Resize((512,512))
-    gray=torchvision.transforms.Grayscale(num_output_channels=1)
+        #     if len(labels)==200:
+        #         break
+        # if len(labels)==200:
+        #     break
     
 
-    all_images_gray512=torch.empty([len(img_paths),512,512])
+    all_images_gray512=torch.empty([len(img_paths),1,512,512])
 
-    # path='../../data/raw/COVID19_Pneumonia_Normal_Chest_Xray_PA_Dataset'
-    #path='/data/raw/COVID19_Pneumonia_Normal_Chest_Xray_PA_Dataset'
+
+     
+    gray_resize_transform_norm = torchvision.transforms.Compose([
+        torchvision.transforms.ToTensor(),
+        torchvision.transforms.Resize((512,512)),
+        check_size_and_gray(torchvision.transforms.Grayscale(num_output_channels=1))
+        # ,torchvision.transforms.Normalize(0,1)
+    ])
+
+    print(plotsample)
     for c,i in enumerate(tqdm(img_paths)):
-        img_bgr: np.array = cv2.imread(i)
-        if (img_bgr[0]==img_bgr[1]).all() and (img_bgr[1]==img_bgr[2]).all():
-            img_gray=img_bgr[:,:,0]
-        else:
-            img_gray: np.array = cv2.cvtColor(img_bgr, cv2.COLOR_BGR2GRAY)
-            
-        x_gray: torch.tensor = K.image_to_tensor(img_gray).view(1,*img_gray.shape)
+        img_gray512=gray_resize_transform_norm(Image.open(i))
+        all_images_gray512[c,:,:,:]=img_gray512
 
-        img_gray512: torch.tensor=resize(x_gray)
-        all_images_gray512[c,:,:]=img_gray512
-    #     batch=torch.cat((batch, img_gray512), 0)
-    #     if c%100==0 &c>1:
-    #         all_images_gray512=torch.cat((all_images_gray512, batch), 0)
-    #         if c!=len(all_images_gray512):
-    #             print(c+1,len(all_images_gray512))
-    #             raise BrokenPipeError("image was missing")
-    #         del batch
-    #         batch=torch.Tensor()
-    # all_images_gray512=torch.cat((all_images_gray512, batch), 0)
+    if plotsample:
+        figpath='reports/figures'
+        if not os.path.isdir(figpath):
+            os.makedirs(figpath)
+        for number in range(5):
+            samples=all_images_gray512[np.random.randint(0,len(all_images_gray512),25),:,:]
+            grid_img=torchvision.utils.make_grid(samples, nrow=int(5))
 
-     # split train set in test and validation set
+            plt.figure()
+            plt.imshow(grid_img.permute(1, 2, 0))
+            plt.savefig(figpath+'/'+'sample'+str(number)+'.png')
+            del samples
+
     validation_split = .3
     seed = 42
-    train_indices, validation_indices, _, _ = train_test_split(
+    train_indices, test_indices, _, _ = train_test_split(
         range(len(all_images_gray512)),
         labels,
         stratify=labels,
         test_size=validation_split,
         random_state=seed
     )
-    train_images=all_images_gray512[train_indices]
-    test_images=all_images_gray512[validation_indices]
-    train_labels=np.array(labels)[train_indices]
-    test_labels=np.array(labels)[validation_indices]
 
-    output_filepath='data/preprocessed/covid_not_norm/'
+    def sizeof_fmt(num, suffix='B'):
+        ''' by Fred Cirera,  https://stackoverflow.com/a/1094933/1870254, modified'''
+        for unit in ['','Ki','Mi','Gi','Ti','Pi','Ei','Zi']:
+            if abs(num) < 1024.0:
+                return "%3.1f %s%s" % (num, unit, suffix)
+            num /= 1024.0
+        return "%.1f %s%s" % (num, 'Yi', suffix)
+
+    
+
+    train_images=all_images_gray512[train_indices].float().clone() 
+    test_images=all_images_gray512[test_indices].float().clone()
+    train_labels=np.array(labels)[train_indices]
+    test_labels=np.array(labels)[test_indices]
+    
+    def sizetorch(value):
+        try:
+            return sys.getsizeof(value.storage())
+        except:
+            return sys.getsizeof(value)
+
+
+    for name, size in sorted(((name, sizetorch(value)) for name, value in locals().items()),
+                            key= lambda x: -x[1])[:10]:
+        print("{:>30}: {:>8}".format(name, sizeof_fmt(size)))
+
     if not os.path.isdir(output_filepath):
         os.makedirs(output_filepath)
-    torch.save(train_images.float(),output_filepath+'train_images.pt')
+    
+    print('break before')
+    torch.save(train_images,output_filepath+'train_images.pt')
+    del train_images
+    print('break after train')
     torch.save(torch.from_numpy(train_labels),output_filepath+'train_labels.pt')
+    del train_labels
 
-    torch.save(test_images.float(),output_filepath+'test_images.pt')
+    torch.save(test_images,output_filepath+'test_images.pt')
+    del test_images
     torch.save(torch.from_numpy(test_labels),output_filepath+'test_labels.pt')
-
+    del test_labels
+    del all_images_gray512
 
     
 
@@ -139,15 +186,19 @@ def main():
     parser.add_argument("--PATH",type=str, default='data/raw/',help="where to save zip")
     parser.add_argument("--NAME", type=str, default="covid19-pneumonia-normal-chest-xraypa-dataset.zip", help="name of file to be extracted")
     parser.add_argument("--exdir", type=str, default='COVID19_Pneumonia_Normal_Chest_Xray_PA_Dataset', help="name of dir to be extracted")
-
-    args = parser.parse_args(sys.argv[2:])
+    parser.add_argument('-plotsample', action='store_true')
+    args = parser.parse_args()
     zip_file_url=args.url
     PATH=args.PATH
     filename=args.NAME
     foldername=args.exdir
+    plotsample=args.plotsample
+
+
     download_extract(zip_file_url,PATH,filename,foldername)
     path='data/raw/COVID19_Pneumonia_Normal_Chest_Xray_PA_Dataset'
-    preprocess(path)
+    print('plotsample:',plotsample)
+    preprocess(path,plotsample=plotsample)
 
     logger = logging.getLogger(__name__)
 
