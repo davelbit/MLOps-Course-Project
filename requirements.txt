@@ -1,14 +1,12 @@
-# local package
--e .
-awscli
-black
-
-# external requirements
-click
-coverage
-flake8
-interrogate
-isort
-mypy
-python-dotenv>=0.5.1
-Sphinx
+kornia==0.6.2
+matplotlib==3.5.0
+numpy==1.21.2
+opencv_python==4.5.5.62
+Pillow==9.0.0
+python-dotenv==0.19.2
+requests==2.26.0
+scikit_learn==1.0.2
+setuptools==58.0.4
+torch==1.10.1
+torchvision==0.11.2
+tqdm==4.62.3
