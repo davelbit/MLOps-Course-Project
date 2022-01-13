@@ -24,8 +24,8 @@ RUN pip install dvc[gs]
 RUN mkdir -p /app/src/data/raw && mkdir -p /app/data/preprocessed
 COPY .dvc /app/.dvc
 COPY data/preprocessed.dvc /app/data/preprocessed.dvc
-# RUN dvc config core.no_scm true
-# RUN dvc pull
+RUN dvc config core.no_scm true
+RUN dvc pull
 
 
 ##Copy and install model dependencies

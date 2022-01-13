@@ -1,4 +1,4 @@
 [core]
     remote = remote_storage
 ['remote "remote_storage"']
-    url = gs://mlops-project-6/
+    url = gs://mlops-project-6/project6
