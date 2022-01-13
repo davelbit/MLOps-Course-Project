@@ -2,4 +2,4 @@ outs:
 - md5: c3acf3f497e8b333afdb28ab3d482eba.dir
   size: 1488828660
   nfiles: 4579
-  path: data
+  path: data/preprocessed
