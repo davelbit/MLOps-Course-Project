@@ -75,7 +75,7 @@ class check_size_and_gray(object):
             img=self.transform(img[nonezero_layers,:,:][:3])
         return img
 
-def preprocess(path : str,plotsample : bool = False, output_filepath : str = 'data/preprocessed/covid_not_norm/'):
+def preprocess(path : str,plotsample : bool = False, output_filepath : str = 'data/preprocessed/covid_not_norm/',maxperclass: int =10000):
     classes=[ name for name in os.listdir(path) if os.path.isdir(os.path.join(path, name)) ]
     classes=np.sort(classes)
     class_map={name:c for c,name in enumerate(classes)}
@@ -84,9 +84,10 @@ def preprocess(path : str,plotsample : bool = False, output_filepath : str = 'da
     for class_name in class_map:
         path_=path+'/'+class_name
         files_names=[ name for name in os.listdir(path_) if not os.path.isdir(os.path.join(path_, name)) ]
-        for file_name in files_names:
-            img_paths.append(path_+'/'+file_name)
-            labels.append(class_map[class_name])
+        for count,file_name in enumerate(files_names):
+            if count<=maxperclass:
+                img_paths.append(path_+'/'+file_name)
+                labels.append(class_map[class_name])
     
         #     if len(labels)==200:
         #         break
@@ -186,19 +187,21 @@ def main():
     parser.add_argument("--PATH",type=str, default='data/raw/',help="where to save zip")
     parser.add_argument("--NAME", type=str, default="covid19-pneumonia-normal-chest-xraypa-dataset.zip", help="name of file to be extracted")
     parser.add_argument("--exdir", type=str, default='COVID19_Pneumonia_Normal_Chest_Xray_PA_Dataset', help="name of dir to be extracted")
+    parser.add_argument("--maxperclass", type=int, default=100, help="maximum imgs per class")
     parser.add_argument('-plotsample', action='store_true')
     args = parser.parse_args()
     zip_file_url=args.url
     PATH=args.PATH
     filename=args.NAME
     foldername=args.exdir
+    maxperclass=args.maxperclass
     plotsample=args.plotsample
 
 
     download_extract(zip_file_url,PATH,filename,foldername)
     path='data/raw/COVID19_Pneumonia_Normal_Chest_Xray_PA_Dataset'
     print('plotsample:',plotsample)
-    preprocess(path,plotsample=plotsample)
+    preprocess(path,plotsample=plotsample,maxperclass=maxperclass)
 
     logger = logging.getLogger(__name__)
 
