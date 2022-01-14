@@ -5,9 +5,7 @@ if __name__ == "__main__":
     trainer.loop()
 
 
-
-
-'''
+"""
 gcloud ai-platform jobs submit training ${JOB_NAME} \
   --region=us-central1 \
   --master-image-uri=gcr.io/cloud-ml-public/training/pytorch-xla.1-10 \
@@ -22,4 +20,5 @@ gcloud ai-platform jobs submit training ${JOB_NAME} \
   --batch-size=100 \
   --learning-rate=0.001
 
-'''
+
+"""
