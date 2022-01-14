@@ -3,19 +3,14 @@ import torch
 # from torch.jit import Error
 from torch.utils.data import Dataset
 
-# import numpy as np
-
-# import torchvision
-
-# import os
-
 
 class Dataset_fetcher(Dataset):
     def __init__(self, PATH_IMG, Path_LAB, transform=None):
         self.transform = transform
 
         self.images = torch.load(PATH_IMG)
-        self.labels = torch.load(Path_LAB)
+        self.labels = torch.load(Path_LAB).long()
+        # self.labels = F.one_hot(labels.long(), num_classes = 3)
 
     def __getitem__(self, idx):
         x = self.images[idx]
