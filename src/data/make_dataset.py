@@ -97,8 +97,6 @@ def preprocess(path : str,plotsample : bool = False, output_filepath : str = 'da
 
     all_images_gray512=torch.empty([len(img_paths),1,512,512])
 
-
-     
     gray_resize_transform_norm = torchvision.transforms.Compose([
         torchvision.transforms.ToTensor(),
         torchvision.transforms.Resize((512,512)),
