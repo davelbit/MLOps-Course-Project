@@ -2,6 +2,7 @@ import torch
 from torch.jit import Error
 from torch.utils.data import Dataset
 import numpy as np
+import torch.nn.functional as F
 
 import torchvision
 
@@ -12,7 +13,8 @@ class Dataset_fetcher(Dataset):
         self.transform=transform
 
         self.images=torch.load(PATH_IMG)
-        self.labels=torch.load(Path_LAB)
+        self.labels=torch.load(Path_LAB).long()
+        #self.labels = F.one_hot(labels.long(), num_classes = 3)
 
     def __getitem__(self, idx):
         x = self.images[idx]
