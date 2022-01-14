@@ -13,14 +13,14 @@ class Training_loop():
         self.optimizer = optim.Adam(self.model.parameters(), lr = 0.003)
         self.criterion = nn.NLLLoss()
         self.DS = Dataset_fetcher(self.path)
-        self.loader = torch.utils.data.DataLoader(DS, shuffle=False, num_workers=0, batch_size=3)
+        self.loader = torch.utils.data.DataLoader(self.DS, shuffle=False, num_workers=0, batch_size=3)
         self.epochs = 10
 
     def loop(self):
 
         for e in tqdm_notebook(range(self.epochs), desc = f"Epochs"):
             running_loss = 0
-            for images, labels in tqdm_notebook(loader, desc = f"Batch number: {e + 1}"):
+            for images, labels in tqdm_notebook(self.loader, desc = f"Batch number: {e + 1}"):
                 # false if image is not readable
                 if images is not False:
                     self.model.train()
