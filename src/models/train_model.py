@@ -1,3 +1,4 @@
+from datetime import datetime
 import torch
 from torch import nn, optim
 import torch.nn.functional as F
@@ -5,31 +6,39 @@ from tqdm.notebook import tqdm_notebook
 from dataset_fetcher import Dataset_fetcher
 from model_architecture import XrayClassifier
 
-<<<<<<< HEAD
-class Training_loop():
-    def __init__(self, path = 'data/raw/COVID19_Pneumonia_Normal_Chest_Xray_PA_Dataset'):
-        
-        self.path = path
-        self.model = XrayClassifier(3)
-        self.optimizer = optim.Adam(self.model.parameters(), lr = 0.003)
-        self.criterion = nn.NLLLoss()
-        self.DS = Dataset_fetcher(self.path)
-        self.loader = torch.utils.data.DataLoader(self.DS, shuffle=False, num_workers=0, batch_size=3)
-        self.epochs = 10
-=======
-
-class Classifier(nn.Module):
+class neural_net(nn.Module):
     def __init__(self):
         super().__init__()
-        self.fc1 = nn.Linear(512 * 512, 3)
+
+        self.fc1 = nn.Linear(512*512, 200)
+        self.fc2 = nn.Linear(200, 100)
+        self.fc3 = nn.Linear(100, 3)
 
     def forward(self, x):
         x = x.view(x.shape[0], -1)
->>>>>>> Stefan
+
+        x = F.relu(self.fc1(x))
+        x = F.relu(self.fc2(x))
+        x = F.log_softmax(self.fc3(x), dim = 1)
+
+        return x
+
+
+
+class Training_loop():
+    def __init__(self, path_img = 'D:\Technical University of Denmark\Machine Learning Operations\MLOps-Course-Project\data\preprocessed\covid_not_norm\\train_images.pt',\
+        path_lab = 'D:\Technical University of Denmark\Machine Learning Operations\MLOps-Course-Project\data\preprocessed\covid_not_norm\\train_labels.pt'):
+        
+        #self.model = XrayClassifier(3)
+        self.model = neural_net()        
+        self.optimizer = optim.Adam(self.model.parameters(), lr = 0.003)
+        self.criterion = nn.NLLLoss()
+        self.DS = Dataset_fetcher(path_img, path_lab)
+        self.loader = torch.utils.data.DataLoader(self.DS, shuffle=False, num_workers=0, batch_size=3)
+        self.epochs = 10
 
     def loop(self):
 
-<<<<<<< HEAD
         for e in tqdm_notebook(range(self.epochs), desc = f"Epochs"):
             running_loss = 0
             for images, labels in tqdm_notebook(self.loader, desc = f"Batch number: {e + 1}"):
@@ -50,36 +59,3 @@ class Classifier(nn.Module):
                         equals = top_class == labels.view(*top_class.shape)
                         self.accuracy = torch.mean(equals.type(torch.FloatTensor))
                     print(f"Accuracy: {self.accuracy.item()*100}%")
-=======
-        return x
-
-
-model = Classifier()
-optimizer = optim.Adam(model.parameters(), lr=0.003)
-criterion = nn.NLLLoss()
-DS = Dataset_fetcher("data/raw/COVID19_Pneumonia_Normal_Chest_Xray_PA_Dataset")
-loader = torch.utils.data.DataLoader(DS, shuffle=False, num_workers=0, batch_size=3)
-
-epochs = 10
-
-for e in tqdm_notebook(range(epochs), desc=f"Epochs"):
-    running_loss = 0
-    for images, labels in tqdm_notebook(loader, desc=f"Batch number: {e + 1}"):
-        # false if image is not readable
-        if images is not False:
-            model.train()
-            optimizer.zero_grad()
-            output = model(images)
-            loss = criterion(output, labels)
-            loss.backward()
-            optimizer.step()
-            running_loss += loss.item()
-    else:
-        if images is not False:
-            with torch.no_grad():
-                model.eval()
-                top_p, top_class = torch.exp(model(images)).topk(1, dim=1)
-                equals = top_class == labels.view(*top_class.shape)
-                accuracy = torch.mean(equals.type(torch.FloatTensor))
-            print(f"Accuracy: {accuracy.item()*100}%")
->>>>>>> Stefan

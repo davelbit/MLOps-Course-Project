@@ -13,33 +13,53 @@
 ######################################################################
 
 import torch
-import torch.nn as nn
-import torch.nn.functional as F
+from torch import nn
 
 
 class XrayClassifier(nn.Module):
-    """
-    Class to define the model architecture
-    Ensure input image size is 32x32
-    """
+    """Model Architecture"""
 
-    def __init__(self):
+    def __init__(self, num_classes=3):
         super(XrayClassifier, self).__init__()
 
-        self.conv1 = nn.Conv2d(1, 6, 5)
-        self.conv2 = nn.Conv2d(6, 16, 5)
-        self.fc1 = nn.Linear(16 * 5 * 5, 120)
-        self.fc2 = nn.Linear(120, 84)
-        self.fc3 = nn.Linear(84, 10)
+        self.conv1 = nn.Conv2d(in_channels=1, out_channels=12, kernel_size=3, stride=1, padding=1)
+        self.bn1 = nn.BatchNorm2d(num_features=12)
+        self.relu1 = nn.ReLU()
+        self.pool = nn.MaxPool2d(kernel_size=2)
 
-    def forward(self, x: torch.Tensor) -> torch.Tensor:
-        """forward loop for the model"""
+        self.conv2 = nn.Conv2d(in_channels=12, out_channels=20, kernel_size=3, stride=1, padding=1)
+        self.bn2 = nn.BatchNorm2d(num_features=20)
+        self.relu2 = nn.ReLU()
 
-        x = F.max_pool2d(F.relu(self.conv1(x)), (2, 2))
-        x = F.max_pool2d(F.relu(self.conv2(x)), 2)
-        x = torch.flatten(x, 1)
-        x = F.relu(self.fc1(x))
-        x = F.relu(self.fc2(x))
-        x = self.fc3(x)
+        self.conv3 = nn.Conv2d(in_channels=20, out_channels=32, kernel_size=3, stride=1, padding=1)
+        self.bn3 = nn.BatchNorm2d(num_features=32)
+        self.relu3 = nn.ReLU()
+
+        self.conv4 = nn.Conv2d(in_channels=32, out_channels=48, kernel_size=3, stride=1, padding=1)
+        self.bn4 = nn.BatchNorm2d(num_features=48)
+        self.relu4 = nn.ReLU()
+        self.dropout = nn.Dropout(p=0.2)
+        
+        self.fc = nn.Linear(in_features=48*256*256, out_features=num_classes)
+
+    def forward(self, x):
+        """Forward pass of the model"""
+        x = self.conv1(x)
+        x = self.bn1(x)
+        x = self.dropout(self.relu1(x))
+        x = self.pool(x)
+        x = self.conv2(x)
+        x = self.dropout(self.relu2(x))
+        x = self.conv3(x)
+        x = self.bn3(x)
+        x = self.dropout(self.relu3(x))
+        x = self.conv4(x)
+        x = self.bn4(x)
+        x = self.relu4(x)
+        x = x.view(x.shape[0], 48*256*256)
+        x = self.fc(x)
 
         return x
+
+
+device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
