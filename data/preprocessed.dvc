@@ -1,0 +1,5 @@
+outs:
+- md5: e1a5198ce2f70a3b1d87f3f2d2f760bb.dir
+  size: 317723901
+  nfiles: 5
+  path: preprocessed
