@@ -67,17 +67,58 @@ def run():
         help="location of train tensor",
     )
 
+    parser.add_argument(
+        '--bucket-name',
+        type=str,
+        default="mlops-project-6",
+        help="name of gs bucket",
+    )
+
+
     args = parser.parse_args()
 
+
+    bucket_name=args.bucket_name
+
+    figname="reports/figures/example.png"
     x,y= np.random.randint(0,100,20),np.random.randint(0,1000,20)
 
     imgs=torch.load(args.image_file)
     labels=torch.load(args.label_file)
-    print(imgs[0,0,:,:].shape)
+    randimg=np.random.randint(0,len(labels))
+    randlabel=str(labels[randimg].numpy())
+    print(imgs[randimg,0,:,:].shape)
     plt.figure()
-    plt.imshow(imgs[0,0,:,:],cmap='gray')
-    plt.title(labels[0])
-    plt.show()
+    plt.imshow(imgs[randimg,0,:,:],cmap='gray')
+    plt.title('class '+randlabel)
+    # plt.show()
+    plt.savefig(figname)
+    print(os.getcwd())
+
+    source_file_name =figname
+    destination_blob_name ='experiment'+randlabel+'/'+source_file_name.split('/')[-1]
+    upload_blob(bucket_name, source_file_name, destination_blob_name)
+
+def upload_blob(bucket_name, source_file_name, destination_blob_name):
+    """Uploads a file to the bucket."""
+    # The ID of your GCS bucket
+    # bucket_name = "your-bucket-name"
+    # The path to your file to upload
+    # source_file_name = "local/path/to/file"
+    # The ID of your GCS object
+    # destination_blob_name = "storage-object-name"
+
+    storage_client = storage.Client()
+    bucket = storage_client.bucket(bucket_name)
+    blob = bucket.blob(destination_blob_name)
+
+    blob.upload_from_filename(source_file_name)
+
+    print(
+        "File {} uploaded to {}.".format(
+            source_file_name, destination_blob_name
+        )
+    )
 
 if __name__ == "__main__":
     run()
