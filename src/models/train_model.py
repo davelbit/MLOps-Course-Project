@@ -2,7 +2,7 @@ from datetime import datetime
 import torch
 from torch import nn, optim
 import torch.nn.functional as F
-from tqdm.notebook import tqdm_notebook
+from tqdm import tqdm
 from dataset_fetcher import Dataset_fetcher
 from model_architecture import XrayClassifier
 
@@ -29,19 +29,19 @@ class Training_loop():
     def __init__(self, path_img = 'D:\Technical University of Denmark\Machine Learning Operations\MLOps-Course-Project\data\preprocessed\covid_not_norm\\train_images.pt',\
         path_lab = 'D:\Technical University of Denmark\Machine Learning Operations\MLOps-Course-Project\data\preprocessed\covid_not_norm\\train_labels.pt'):
         
-        #self.model = XrayClassifier(3)
-        self.model = neural_net()        
+        self.model = XrayClassifier(3)
+        #self.model = neural_net()        
         self.optimizer = optim.Adam(self.model.parameters(), lr = 0.003)
         self.criterion = nn.NLLLoss()
         self.DS = Dataset_fetcher(path_img, path_lab)
-        self.loader = torch.utils.data.DataLoader(self.DS, shuffle=False, num_workers=0, batch_size=3)
+        self.loader = torch.utils.data.DataLoader(self.DS, shuffle=False, num_workers=0, batch_size=2)
         self.epochs = 10
 
     def loop(self):
 
-        for e in tqdm_notebook(range(self.epochs), desc = f"Epochs"):
+        for e in tqdm(range(self.epochs), desc = f"Epochs"):
             running_loss = 0
-            for images, labels in tqdm_notebook(self.loader, desc = f"Batch number: {e + 1}"):
+            for images, labels in tqdm(self.loader, desc = f"Batch number: {e + 1}"):
                 # false if image is not readable
                 if images is not False:
                     self.model.train()
@@ -58,4 +58,4 @@ class Training_loop():
                         top_p, top_class = torch.exp(self.model(images)).topk(1, dim = 1)
                         equals = top_class == labels.view(*top_class.shape)
                         self.accuracy = torch.mean(equals.type(torch.FloatTensor))
-                    print(f"Accuracy: {self.accuracy.item()*100}%")
+                    print(f"Accuracy: {self.accuracy.item()*100}%\n")
