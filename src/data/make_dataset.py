@@ -3,20 +3,12 @@ import argparse
 
 # import io
 import logging
-<<<<<<< HEAD
-import os
-import sys
-import zipfile
-from pathlib import Path
-
-=======
 
 import os
 import sys
 import zipfile
 from pathlib import Path
 
->>>>>>> 92ffdc16b57eb91eb776a67aae73c7cf51f81d33
 # import cv2
 # import kornia as K
 import matplotlib.pyplot as plt
