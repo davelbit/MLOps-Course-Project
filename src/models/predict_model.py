@@ -19,6 +19,7 @@ import matplotlib.pyplot as plt
 import numpy as np
 import omegaconf
 import torch
+from dataset_fetcher import Dataset_fetcher
 from model_architecture import XrayClassifier
 from torch import nn
 
@@ -27,9 +28,6 @@ def get_model_from_checkpoint(path: str) -> nn.Module:
     """Returns a loaded model from checkpoint"""
 
     from src.models.model_architecture import XrayClassifier
-
-    if not os.path.exists(path):
-        raise FileNotFoundError
 
     model = XrayClassifier()
     model.load_state_dict(torch.load(path))
@@ -44,7 +42,9 @@ def make_predictions(
     """Classify unseen images from a validation set the model hasn't seen in training or testing"""
 
     # Load dataset
-    dataset = torch.load(config.VALIDATIONSET)
+    # dataset = torch.load(config.VALIDATIONSET)
+    dataset = Dataset_fetcher(path)
+    dataloader = torch.utils.data.DataLoader(dataset, shuffle=False, num_workers=0, batch_size=3)
 
     # Disable gradient tracking
     with torch.no_grad():
