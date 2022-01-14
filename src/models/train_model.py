@@ -31,17 +31,18 @@ class Training_loop():
         
         self.model = XrayClassifier(3)
         #self.model = neural_net()        
-        self.optimizer = optim.Adam(self.model.parameters(), lr = 0.003)
+        self.optimizer = optim.SGD(self.model.parameters(), lr = 0.003)
         self.criterion = nn.NLLLoss()
         self.DS = Dataset_fetcher(path_img, path_lab)
-        self.loader = torch.utils.data.DataLoader(self.DS, shuffle=False, num_workers=0, batch_size=2)
+        self.loader = torch.utils.data.DataLoader(self.DS, shuffle=False, num_workers=0, batch_size=10)
         self.epochs = 10
 
     def loop(self):
 
         for e in tqdm(range(self.epochs), desc = f"Epochs"):
             running_loss = 0
-            for images, labels in tqdm(self.loader, desc = f"Batch number: {e + 1}"):
+            #for images, labels in tqdm(self.loader, desc = f"Batch number: {e + 1}"):
+            for images, labels in self.loader:
                 # false if image is not readable
                 if images is not False:
                     self.model.train()
@@ -51,6 +52,7 @@ class Training_loop():
                     self.loss.backward()
                     self.optimizer.step()
                     running_loss += self.loss.item()
+                    print(running_loss)    
             else:
                 if images is not False:
                     with torch.no_grad():
