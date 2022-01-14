@@ -11,11 +11,12 @@ from torch.utils.data import Dataset
 
 
 class Dataset_fetcher(Dataset):
-    def __init__(self, PATH_IMG, Path_LAB, transform=None):
+    def __init__(self, PATH_IMG, transform=None):
         self.transform = transform
 
         self.images = torch.load(PATH_IMG)
-        self.labels = torch.load(Path_LAB)
+        print(self.images)
+        # self.labels = torch.load(Path_LAB)
 
     def __getitem__(self, idx):
         x = self.images[idx]

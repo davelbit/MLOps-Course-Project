@@ -1,4 +1,5 @@
 import torch
+import wandb
 from dataset_fetcher import Dataset_fetcher
 from model_architecture import XrayClassifier
 from torch import nn, optim
@@ -8,8 +9,10 @@ from tqdm.notebook import tqdm_notebook
 class Training_loop:
     def __init__(self, path="data/raw/COVID19_Pneumonia_Normal_Chest_Xray_PA_Dataset"):
 
+        wandb.init(project="MLOps-Project")
         self.path = path
         self.model = XrayClassifier(3)
+        wandb.watch(self.model, log_freq=100)
         self.optimizer = optim.Adam(self.model.parameters(), lr=0.003)
         self.criterion = nn.NLLLoss()
         self.DS = Dataset_fetcher(self.path)
@@ -19,7 +22,6 @@ class Training_loop:
         self.epochs = 10
 
     def loop(self):
-
         for e in tqdm_notebook(range(self.epochs), desc="Epochs"):
             running_loss = 0
             for images, labels in tqdm_notebook(self.loader, desc=f"Batch number: {e + 1}"):
@@ -32,6 +34,7 @@ class Training_loop:
                     self.loss.backward()
                     self.optimizer.step()
                     running_loss += self.loss.item()
+                    wandb.log({"loss": running_loss})
 
             if images is not False:
                 with torch.no_grad():
