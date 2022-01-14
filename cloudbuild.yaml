@@ -1,5 +1,5 @@
 steps:
 - name: 'gcr.io/cloud-builders/docker'
-  args: ['build', '-t', 'gcr.io/ecstatic-elf-337907/project','-f','train.Dockerfile','.']
+  args: ['build', '-t', 'gcr.io/ charged-city-337910/project','-f','train.Dockerfile','.']
 - name: 'gcr.io/cloud-builders/docker'
-  args: ['push', 'gcr.io/ecstatic-elf-337907/project']
+  args: ['push', 'gcr.io/charged-city-337910/project']
