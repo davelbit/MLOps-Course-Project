@@ -134,3 +134,9 @@ dmypy.json
 #VScode
 .vscode/
 
+#dvc
+.dvc/
+.dvc/config
+
+#precommit
+interrogate_badge.svg
