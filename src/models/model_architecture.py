@@ -19,7 +19,7 @@ from torch import nn
 class XrayClassifier(nn.Module):
     """Model Architecture"""
 
-    def __init__(self, num_classes=3):
+    def __init__(self, num_classes=3, dropout_probability=0.2):
         super(XrayClassifier, self).__init__()
 
         self.conv1 = nn.Conv2d(in_channels=1, out_channels=12, kernel_size=3, stride=1, padding=1)
@@ -38,9 +38,9 @@ class XrayClassifier(nn.Module):
         self.conv4 = nn.Conv2d(in_channels=32, out_channels=48, kernel_size=3, stride=1, padding=1)
         self.bn4 = nn.BatchNorm2d(num_features=48)
         self.relu4 = nn.ReLU()
-        self.dropout = nn.Dropout(p=0.2)
-        
-        self.fc = nn.Linear(in_features=48*256*256, out_features=num_classes)
+        self.dropout = nn.Dropout(p=dropout_probability)
+
+        self.fc = nn.Linear(in_features=48 * 256 * 256, out_features=num_classes)
 
     def forward(self, x):
         """Forward pass of the model"""
@@ -56,7 +56,7 @@ class XrayClassifier(nn.Module):
         x = self.conv4(x)
         x = self.bn4(x)
         x = self.relu4(x)
-        x = x.view(x.shape[0], 48*256*256)
+        x = x.view(x.shape[0], 48 * 256 * 256)
         x = self.fc(x)
 
         return x
