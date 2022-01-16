@@ -162,6 +162,9 @@ def train(TRAIN_PATHS: dict[str, str], TEST_PATHS: dict[str, str]) -> None:
     end_t = time.time()
     run_time = end_t - start_t
 
+    # if checkpoint folder is meant to be saved for each experiment
+    # wandb.save(config.CHECKPOINT_PATH)
+
     print(f"[INFO] Successfully completed training session. Running time: {run_time/60:.2f} min")
 
 
