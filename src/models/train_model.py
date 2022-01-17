@@ -25,16 +25,20 @@ from omegaconf import OmegaConf
 from torch import nn, optim
 
 
+<<<<<<< HEAD
 # @hydra.main(config_path="config/", config_name="config.yaml")
+=======
+>>>>>>> 578823689f8ebe0fde311cb475857045f47b9b62
 def train(TRAIN_PATHS: dict[str, str], TEST_PATHS: dict[str, str]) -> None:
     """This function runs the whole training procedure"""
 
     # set flags / seeds
     np.random.seed(1)
     torch.manual_seed(1)
+    workingdir=os.getcwd()+'/'
 
     # Load config file
-    config = OmegaConf.load("config.yaml")
+    config = OmegaConf.load(workingdir+"config/config.yaml")
 
     # Initialize logging with wandb and track conf settings
     wandb.init(project="MLOps-Project", config=dict(config))
@@ -173,8 +177,7 @@ def train(TRAIN_PATHS: dict[str, str], TEST_PATHS: dict[str, str]) -> None:
 if __name__ == "__main__":
 
     # this path must be adapted to your own machine
-    # root_dir = "/home/davidparham/Workspaces/DTU/MLOps/project/"
-    root_dir = "/home/rianleevinson/MLOps-Course-Project/"
+    root_dir = os.getcwd()+'/'# "/home/davidparham/Workspaces/DTU/MLOps/project/"
 
     TRAIN_PATHS = {
         "images": root_dir + "data/preprocessed/covid_not_norm/train_images.pt",

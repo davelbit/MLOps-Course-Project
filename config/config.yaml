@@ -1,9 +1,12 @@
-HYPERPARAMETERS:
-EPOCHS: 100
-BATCH_SIZE: 4
-LEARNING_RATE: 0.001
+#config.yaml
+
+EPOCHS: 10
+BATCH_SIZE: 32
+LEARNING_RATE: 1e-4
 DROPOUT_PROBABILITY: 0.2
 
-# config  variables
-N_WORKERS: 2
-best_val: 0.5 #Why is this in config tho
+N_WORKERS: 4
+BEST_VAL: 100000000
+
+BEST_MODEL_PATH: "models/checkpoints/best_model.pth"
+CHECKPOINT_PATH: "models/checkpoints/"
