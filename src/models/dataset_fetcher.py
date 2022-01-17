@@ -12,10 +12,12 @@
 # Module: This module is responsible accessing our data
 ######################################################################
 
+import os
 from typing import Union
 
 import torch
 import torchvision.transforms as transforms
+from omegaconf import OmegaConf
 from torch.utils.data import DataLoader, Dataset
 
 
@@ -47,10 +49,16 @@ class Dataset_fetcher(Dataset):
 
 if __name__ == "__main__":
 
-    root_dir = "/home/davidparham/Workspaces/DTU/"
-    path_img = root_dir + "MLOps/project/data/preprocessed/covid_not_norm/train_images.pt"
-    path_lab = root_dir + "MLOps/project/data/preprocessed/covid_not_norm/train_labels.pt"
+    BASE_DIR = os.getcwd()
 
-    dataset = Dataset_fetcher(path_img, path_lab)
+    # Load config file
+    config = OmegaConf.load(BASE_DIR + "/config/config.yaml")
+
+    TRAIN_PATHS = {
+        "images": BASE_DIR + config.TRAIN_PATHS.images,
+        "labels": BASE_DIR + config.TRAIN_PATHS.labels,
+    }
+
+    dataset = Dataset_fetcher(TRAIN_PATHS["images"], TRAIN_PATHS["labels"])
     dataloader = DataLoader(dataset, shuffle=False, num_workers=4, batch_size=3)
     image, label = next(iter(dataloader))

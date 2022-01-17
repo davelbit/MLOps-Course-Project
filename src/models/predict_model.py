@@ -12,16 +12,18 @@
 # Module: This module is responsible for prediction
 ######################################################################
 
+import os
 from typing import List
 
 import numpy as np
 import torch
-import wandb
 from dataset_fetcher import Dataset_fetcher
 from matplotlib import pyplot as plt
 from omegaconf import OmegaConf
 from torch import nn
 from tqdm import tqdm
+
+import wandb
 
 
 def get_model_from_checkpoint(path: str) -> nn.Module:
@@ -62,22 +64,29 @@ def create_plot(data: List[torch.tensor], classes: tuple) -> plt:
     return plt
 
 
-def inference(VAL_PATHS: dict[str, str], model: nn.Module = None, load_model: bool = False) -> None:
+def inference(model: nn.Module = None, load_model: bool = False) -> None:
     """Classify unseen images from a validation set the model hasn't seen in training or testing"""
 
     # set flags / seeds
     np.random.seed(1)
     torch.manual_seed(1)
 
+    BASE_DIR = os.getcwd()
+
     # Load config file
-    config = OmegaConf.load("config.yaml")
+    config = OmegaConf.load(BASE_DIR + "/config/config.yaml")
 
     # Initialize logging with wandb and track conf settings
-    wandb.init(project="MLOps-Project", config=dict(config))
+    wandb.init(project="MLOps-Project")
 
     # Optimizer Hyperparameter / const variables
     BATCH_SIZE = 1
     N_WORKERS = config.N_WORKERS
+
+    VAL_PATHS = {
+        "images": BASE_DIR + config.TEST_PATHS.images,
+        "labels": BASE_DIR + config.TEST_PATHS.labels,
+    }
 
     print("[INFO] Load dataset from disk...")
     validation_set = Dataset_fetcher(VAL_PATHS["images"], VAL_PATHS["labels"])
