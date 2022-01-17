@@ -18,50 +18,6 @@ import time
 import hydra
 import numpy as np
 import torch
-<<<<<<< HEAD
-import torch.nn.functional as F
-from dataset_fetcher import Dataset_fetcher
-from model_architecture import XrayClassifier
-from torch import nn, optim
-from tqdm.notebook import tqdm_notebook
-
-
-class Training_loop:
-    def __init__(self, path="data/raw/COVID19_Pneumonia_Normal_Chest_Xray_PA_Dataset"):
-
-        self.path = path
-        self.model = XrayClassifier(3)
-        self.optimizer = optim.Adam(self.model.parameters(), lr=0.003)
-        self.criterion = nn.NLLLoss()
-        self.DS = Dataset_fetcher(self.path)
-        self.loader = torch.utils.data.DataLoader(
-            self.DS, shuffle=False, num_workers=0, batch_size=3
-        )
-        self.epochs = 10
-
-    def loop(self):
-
-        for e in tqdm_notebook(range(self.epochs), desc=f"Epochs"):
-            running_loss = 0
-            for images, labels in tqdm_notebook(self.loader, desc=f"Batch number: {e + 1}"):
-                # false if image is not readable
-                if images is not False:
-                    self.model.train()
-                    self.optimizer.zero_grad()
-                    output = self.model(images)
-                    self.loss = self.criterion(output, labels)
-                    self.loss.backward()
-                    self.optimizer.step()
-                    running_loss += self.loss.item()
-            else:
-                if images is not False:
-                    with torch.no_grad():
-                        self.model.eval()
-                        top_p, top_class = torch.exp(self.model(images)).topk(1, dim=1)
-                        equals = top_class == labels.view(*top_class.shape)
-                        self.accuracy = torch.mean(equals.type(torch.FloatTensor))
-                    print(f"Accuracy: {self.accuracy.item()*100}%")
-=======
 import wandb
 from dataset_fetcher import Dataset_fetcher
 from model_architecture import XrayClassifier
@@ -69,17 +25,17 @@ from omegaconf import OmegaConf
 from torch import nn, optim
 
 
-@hydra.main(config_path="config/", config_name="config.yaml")
 def train(TRAIN_PATHS: dict[str, str], TEST_PATHS: dict[str, str]) -> None:
     """This function runs the whole training procedure"""
 
     # set flags / seeds
     np.random.seed(1)
     torch.manual_seed(1)
+    workingdir=os.getcwd()+'/'
 
     # Load config file
-    config = OmegaConf.load("config.yaml")
-
+    config = OmegaConf.load(workingdir+"config/config.yaml")
+    print("[INFO] \n",dict(config))
     # Initialize logging with wandb and track conf settings
     wandb.init(project="MLOps-Project", config=dict(config))
 
@@ -217,7 +173,7 @@ def train(TRAIN_PATHS: dict[str, str], TEST_PATHS: dict[str, str]) -> None:
 if __name__ == "__main__":
 
     # this path must be adapted to your own machine
-    root_dir = "/home/davidparham/Workspaces/DTU/MLOps/project/"
+    root_dir = os.getcwd()+'/'# "/home/davidparham/Workspaces/DTU/MLOps/project/"
 
     TRAIN_PATHS = {
         "images": root_dir + "data/preprocessed/covid_not_norm/train_images.pt",
@@ -230,4 +186,3 @@ if __name__ == "__main__":
     }
 
     train(TRAIN_PATHS, TEST_PATHS)
->>>>>>> main

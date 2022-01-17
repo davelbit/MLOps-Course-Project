@@ -1,0 +1,24 @@
+{
+    "os": "Linux-5.11.0-46-generic-x86_64-with-glibc2.31",
+    "python": "3.9.7",
+    "heartbeatAt": "2022-01-17T09:19:15.684214",
+    "startedAt": "2022-01-17T09:19:14.453457",
+    "docker": null,
+    "gpu": "NVIDIA GeForce GTX 1060 3GB",
+    "gpu_count": 1,
+    "cpu_count": 16,
+    "cuda": null,
+    "args": [],
+    "state": "running",
+    "program": "/home/slangen/Documents/MLOps-Course-Project/src/models/predict_model.py",
+    "codePath": "src/models/predict_model.py",
+    "git": {
+        "remote": "https://StefanNa:@github.com/davelbit/MLOps-Course-Project.git",
+        "commit": "8c97e059b951ce1726dfa564c0ad679db5687a86"
+    },
+    "email": "steven_steven@hotmail.de",
+    "root": "/home/slangen/Documents/MLOps-Course-Project",
+    "host": "slangen-MS-7A34",
+    "username": "slangen",
+    "executable": "/home/slangen/anaconda3/envs/CMLOps1/bin/python"
+}
