@@ -1,5 +1,3 @@
-
-
 import argparse
 
 import numpy as np
@@ -56,7 +54,7 @@ def run():
 
     parser.add_argument(
         "-img",
-        '--image-file',
+        "--image-file",
         type=str,
         default="data/preprocessed/covid_not_norm/train_images.pt",
         help="location of train tensor",
@@ -64,7 +62,7 @@ def run():
 
     parser.add_argument(
         "-lab",
-        '--label-file',
+        "--label-file",
         type=str,
         default="data/preprocessed/covid_not_norm/train_labels.pt",
         help="location of train tensor",
@@ -72,43 +70,42 @@ def run():
 
     parser.add_argument(
         "-bs",
-        '--batch-size',
+        "--batch-size",
         type=str,
         default="data/preprocessed/covid_not_norm",
         help="location of train tensor",
     )
 
     parser.add_argument(
-        '--bucket-name',
+        "--bucket-name",
         type=str,
         default="mlops-project-6",
         help="name of gs bucket",
     )
 
-
     args = parser.parse_args()
 
+    bucket_name = args.bucket_name
 
-    bucket_name=args.bucket_name
+    figname = "reports/figures/example.png"
+    x, y = np.random.randint(0, 100, 20), np.random.randint(0, 1000, 20)
 
-    figname="reports/figures/example.png"
-    x,y= np.random.randint(0,100,20),np.random.randint(0,1000,20)
-
-    imgs=torch.load(args.image_file)
-    labels=torch.load(args.label_file)
-    randimg=np.random.randint(0,len(labels))
-    randlabel=str(labels[randimg].numpy())
-    print(imgs[randimg,0,:,:].shape)
+    imgs = torch.load(args.image_file)
+    labels = torch.load(args.label_file)
+    randimg = np.random.randint(0, len(labels))
+    randlabel = str(labels[randimg].numpy())
+    print(imgs[randimg, 0, :, :].shape)
     plt.figure()
-    plt.imshow(imgs[randimg,0,:,:],cmap='gray')
-    plt.title('class '+randlabel)
+    plt.imshow(imgs[randimg, 0, :, :], cmap="gray")
+    plt.title("class " + randlabel)
     # plt.show()
     plt.savefig(figname)
     print(os.getcwd())
 
-    source_file_name =figname
-    destination_blob_name ='experiment'+randlabel+'/'+source_file_name.split('/')[-1]
+    source_file_name = figname
+    destination_blob_name = "experiment" + randlabel + "/" + source_file_name.split("/")[-1]
     upload_blob(bucket_name, source_file_name, destination_blob_name)
+
 
 def upload_blob(bucket_name, source_file_name, destination_blob_name):
     """Uploads a file to the bucket."""
@@ -125,11 +122,8 @@ def upload_blob(bucket_name, source_file_name, destination_blob_name):
 
     blob.upload_from_filename(source_file_name)
 
-    print(
-        "File {} uploaded to {}.".format(
-            source_file_name, destination_blob_name
-        )
-    )
+    print("File {} uploaded to {}.".format(source_file_name, destination_blob_name))
+
 
 if __name__ == "__main__":
     run()
