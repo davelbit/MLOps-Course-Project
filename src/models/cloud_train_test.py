@@ -24,6 +24,17 @@ gcloud ai-platform jobs submit training ${JOB_NAME} \
   --learning-rate=0.001
 """
 
+"""
+JOB_NAME=test_job
+gcloud ai-platform jobs submit training ${JOB_NAME} \
+  --region=europe-west1 \
+  --master-image-uri=gcr.io/ecstatic-elf-337907/project:latest \
+  --scale-tier=BASIC \
+  --package-path=./ \
+  --module-name=src.models.cloud_train_test \
+  -- \
+"""
+
 
 def run():
     parser = argparse.ArgumentParser(description="model running arguments")
