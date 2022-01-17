@@ -149,8 +149,8 @@ def inference(VAL_PATHS: dict[str, str], model: nn.Module = None, load_model: bo
 if __name__ == "__main__":
 
     # this path must be adapted to your own machine
-    root_dir = "/home/davidparham/Workspaces/DTU/MLOps/project/"
-
+    # root_dir = "/home/davidparham/Workspaces/DTU/MLOps/project/"
+    root_dir = "/home/rianleevinson/MLOps-Course-Project/"
     # TODO: Validation files need to be created
     VAL_PATHS = {
         "images": root_dir + "data/preprocessed/covid_not_norm/test_images.pt",

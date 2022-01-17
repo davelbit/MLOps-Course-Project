@@ -18,6 +18,7 @@ import torch
 import torchvision.transforms as transforms
 from torch.utils.data import DataLoader, Dataset
 
+# from config import paths
 
 # TODO: Write tests for this module
 class Dataset_fetcher(Dataset):
@@ -45,12 +46,12 @@ class Dataset_fetcher(Dataset):
         return len(self.images)
 
 
-if __name__ == "__main__":
+# if __name__ == "__main__":
 
-    root_dir = "/home/davidparham/Workspaces/DTU/"
-    path_img = root_dir + "MLOps/project/data/preprocessed/covid_not_norm/train_images.pt"
-    path_lab = root_dir + "MLOps/project/data/preprocessed/covid_not_norm/train_labels.pt"
+#     # root_dir = paths.root_dir
+#     # path_img = root_dir + paths.path_img
+#     # path_lab = root_dir + paths.path_lab
 
-    dataset = Dataset_fetcher(path_img, path_lab)
-    dataloader = DataLoader(dataset, shuffle=False, num_workers=4, batch_size=3)
-    image, label = next(iter(dataloader))
+#     dataset = Dataset_fetcher(path_img, path_lab)
+#     dataloader = DataLoader(dataset, shuffle=False, num_workers=4, batch_size=3)
+#     image, label = next(iter(dataloader))

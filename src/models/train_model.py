@@ -25,7 +25,7 @@ from omegaconf import OmegaConf
 from torch import nn, optim
 
 
-@hydra.main(config_path="config/", config_name="config.yaml")
+# @hydra.main(config_path="config/", config_name="config.yaml")
 def train(TRAIN_PATHS: dict[str, str], TEST_PATHS: dict[str, str]) -> None:
     """This function runs the whole training procedure"""
 
@@ -173,7 +173,8 @@ def train(TRAIN_PATHS: dict[str, str], TEST_PATHS: dict[str, str]) -> None:
 if __name__ == "__main__":
 
     # this path must be adapted to your own machine
-    root_dir = "/home/davidparham/Workspaces/DTU/MLOps/project/"
+    # root_dir = "/home/davidparham/Workspaces/DTU/MLOps/project/"
+    root_dir = "/home/rianleevinson/MLOps-Course-Project/"
 
     TRAIN_PATHS = {
         "images": root_dir + "data/preprocessed/covid_not_norm/train_images.pt",
