@@ -48,7 +48,7 @@ def train() -> None:
 
     # config  variables
     N_WORKERS = config.N_WORKERS
-    best_val = config.BEST_VAL
+    best_val = 100000000
 
     TRAIN_PATHS = {
         "images": BASE_DIR + config.TRAIN_PATHS.images,

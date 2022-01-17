@@ -158,7 +158,7 @@ def inference(model: nn.Module = None, load_model: bool = False) -> None:
 if __name__ == "__main__":
 
     # this path must be adapted to your own machine
-    root_dir = "/home/davidparham/Workspaces/DTU/MLOps/project/"
+    root_dir = os.getcwd() + "/"  # "/home/davidparham/Workspaces/DTU/MLOps/project/"
 
     # TODO: Validation files need to be created
     VAL_PATHS = {
