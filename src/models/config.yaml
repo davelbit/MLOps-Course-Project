@@ -1,0 +1,12 @@
+#config.yaml
+
+EPOCHS: 10
+BATCH_SIZE: 32
+LEARNING_RATE: 1e-4
+DROPOUT_PROBABILITY: 0.2
+
+N_WORKERS: 4
+BEST_VAL: 100000000
+
+BEST_MODEL_PATH: "checkpoints/best_model.pth"
+CHECKPOINT_PATH: "checkpoints/"
