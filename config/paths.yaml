@@ -1,0 +1,4 @@
+PATHS:
+root_dir: "/home/rianleevinson/MLOps-Course-Project/"
+path_img: "ata/preprocessed/covid_not_norm/train_images.pt"
+path_lab: "data/preprocessed/covid_not_norm/train_labels.pt"
