@@ -13,11 +13,7 @@
 ######################################################################
 
 from typing import List
-<<<<<<< HEAD
 import os
-=======
-
->>>>>>> 8c97e059b951ce1726dfa564c0ad679db5687a86
 import numpy as np
 import torch
 import wandb
@@ -72,16 +68,10 @@ def inference(VAL_PATHS: dict[str, str], model: nn.Module = None, load_model: bo
     # set flags / seeds
     np.random.seed(1)
     torch.manual_seed(1)
-<<<<<<< HEAD
     workingdir=os.getcwd()+'/'
 
     # Load config file
     config = OmegaConf.load(workingdir+"config/config.yaml")
-=======
-
-    # Load config file
-    config = OmegaConf.load("config.yaml")
->>>>>>> 8c97e059b951ce1726dfa564c0ad679db5687a86
 
     # Initialize logging with wandb and track conf settings
     wandb.init(project="MLOps-Project", config=dict(config))
@@ -102,11 +92,7 @@ def inference(VAL_PATHS: dict[str, str], model: nn.Module = None, load_model: bo
 
     if load_model:
         # Loading saved model
-<<<<<<< HEAD
         model = get_model_from_checkpoint(workingdir+config.BEST_MODEL_PATH)
-=======
-        model = get_model_from_checkpoint(config.BEST_MODEL_PATH)
->>>>>>> 8c97e059b951ce1726dfa564c0ad679db5687a86
 
     wandb.watch(model, log_freq=100)
 
@@ -164,11 +150,7 @@ def inference(VAL_PATHS: dict[str, str], model: nn.Module = None, load_model: bo
 if __name__ == "__main__":
 
     # this path must be adapted to your own machine
-<<<<<<< HEAD
     root_dir = os.getcwd()+'/'# "/home/davidparham/Workspaces/DTU/MLOps/project/"
-=======
-    root_dir = "/home/davidparham/Workspaces/DTU/MLOps/project/"
->>>>>>> 8c97e059b951ce1726dfa564c0ad679db5687a86
 
     # TODO: Validation files need to be created
     VAL_PATHS = {

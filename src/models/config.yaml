@@ -8,10 +8,5 @@ DROPOUT_PROBABILITY: 0.2
 N_WORKERS: 4
 BEST_VAL: 100000000
 
-<<<<<<< HEAD
 BEST_MODEL_PATH: "models/checkpoints/best_model.pth"
 CHECKPOINT_PATH: "models/checkpoints/"
-=======
-BEST_MODEL_PATH: "checkpoints/best_model.pth"
-CHECKPOINT_PATH: "checkpoints/"
->>>>>>> 8c97e059b951ce1726dfa564c0ad679db5687a86
