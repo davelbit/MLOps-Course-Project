@@ -15,6 +15,7 @@
 import os
 import time
 
+import hydra
 import numpy as np
 import torch
 import wandb
@@ -24,6 +25,7 @@ from omegaconf import OmegaConf
 from torch import nn, optim
 
 
+@hydra.main(config_path="config/", config_name="config.yaml")
 def train(TRAIN_PATHS: dict[str, str], TEST_PATHS: dict[str, str]) -> None:
     """This function runs the whole training procedure"""
 
