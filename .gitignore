@@ -1,5 +1,8 @@
 # all data
 
+# badges
+interrogate_badge.svg
+
 # Byte-compiled / optimized / DLL files
 __pycache__/
 *.py[cod]
@@ -134,3 +137,10 @@ dmypy.json
 #VScode
 .vscode/
 
+#dvc
+.dvc
+.dvc/config
+.dvc/
+
+#precommit
+interrogate_badge.svg

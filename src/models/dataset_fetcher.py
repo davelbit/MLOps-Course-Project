@@ -1,29 +1,56 @@
+#!/usr/bin/env python3
+######################################################################
+# Authors:      <s202540> Rian Leevinson
+#                     <s202385> David Parham
+#                     <s193647> Stefan Nahstoll
+#                     <s210246> Abhista Partal Balasubramaniam
+#
+# Course:        Machine Learning Operations
+# Semester:    Spring 2022
+# Institution:  Technical University of Denmark (DTU)
+#
+# Module: This module is responsible accessing our data
+######################################################################
+
+from typing import Union
+
 import torch
-from torch.jit import Error
-from torch.utils.data import Dataset
-import numpy as np
-import torch.nn.functional as F
+import torchvision.transforms as transforms
+from torch.utils.data import DataLoader, Dataset
 
-import torchvision
 
-import os
-
+# TODO: Write tests for this module
 class Dataset_fetcher(Dataset):
-    def __init__(self,PATH_IMG,Path_LAB,transform=None):
-        self.transform=transform
+    def __init__(
+        self,
+        PATH_IMG: str,
+        PATH_LAB: str,
+        transform: Union[transforms.transforms.Compose, None] = None,
+    ) -> None:
 
-        self.images=torch.load(PATH_IMG)
-        self.labels=torch.load(Path_LAB).long()
-        #self.labels = F.one_hot(labels.long(), num_classes = 3)
+        self.images = torch.load(PATH_IMG)
+        self.labels = torch.load(PATH_LAB).long()
+        self.transform = transform
 
-    def __getitem__(self, idx):
-        x = self.images[idx]
-        y = self.labels[idx]
+    def __getitem__(self, idx: int) -> Union[torch.tensor, str]:
+        image = self.images[idx]
+        label = self.labels[idx]
 
         if self.transform:
-            x = self.transform(x)
+            image = self.transform(image)
 
-        return x,y
+        return image, label
 
-    def __len__(self):
-        return (len(self.images))
+    def __len__(self) -> int:
+        return len(self.images)
+
+
+if __name__ == "__main__":
+
+    root_dir = "/home/davidparham/Workspaces/DTU/"
+    path_img = root_dir + "MLOps/project/data/preprocessed/covid_not_norm/train_images.pt"
+    path_lab = root_dir + "MLOps/project/data/preprocessed/covid_not_norm/train_labels.pt"
+
+    dataset = Dataset_fetcher(path_img, path_lab)
+    dataloader = DataLoader(dataset, shuffle=False, num_workers=4, batch_size=3)
+    image, label = next(iter(dataloader))
