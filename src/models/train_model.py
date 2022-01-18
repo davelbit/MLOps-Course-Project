@@ -25,10 +25,6 @@ from omegaconf import OmegaConf
 from torch import nn, optim
 
 
-<<<<<<< HEAD
-# @hydra.main(config_path="config/", config_name="config.yaml")
-=======
->>>>>>> 578823689f8ebe0fde311cb475857045f47b9b62
 def train(TRAIN_PATHS: dict[str, str], TEST_PATHS: dict[str, str]) -> None:
     """This function runs the whole training procedure"""
 
