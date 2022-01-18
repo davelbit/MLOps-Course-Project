@@ -17,23 +17,25 @@ import time
 
 import numpy as np
 import torch
-import wandb
 from dataset_fetcher import Dataset_fetcher
 from model_architecture import XrayClassifier
 from omegaconf import OmegaConf
 from torch import nn, optim
 from cloud_functions import upload_blob
+import wandb
 
-def train(TRAIN_PATHS: dict[str, str], TEST_PATHS: dict[str, str]) -> None:
+
+def train() -> None:
     """This function runs the whole training procedure"""
 
     # set flags / seeds
     np.random.seed(1)
     torch.manual_seed(1)
-    workingdir = os.getcwd() + "/"
+
+    BASE_DIR = os.getcwd()
 
     # Load config file
-    config = OmegaConf.load(workingdir + "config/config.yaml")
+    config = OmegaConf.load(BASE_DIR + "/config/config.yaml")
 
     # Initialize logging with wandb and track conf settings
     wandb.init(project="MLOps-Project", config=dict(config))
@@ -46,7 +48,17 @@ def train(TRAIN_PATHS: dict[str, str], TEST_PATHS: dict[str, str]) -> None:
 
     # config  variables
     N_WORKERS = config.N_WORKERS
-    best_val = config.BEST_VAL
+    best_val = 100000000
+
+    TRAIN_PATHS = {
+        "images": BASE_DIR + config.TRAIN_PATHS.images,
+        "labels": BASE_DIR + config.TRAIN_PATHS.labels,
+    }
+
+    TEST_PATHS = {
+        "images": BASE_DIR + config.TEST_PATHS.images,
+        "labels": BASE_DIR + config.TEST_PATHS.labels,
+    }
 
     print("[INFO] Load datasets from disk...")
     training_set = Dataset_fetcher(TRAIN_PATHS["images"], TRAIN_PATHS["labels"])
@@ -171,17 +183,4 @@ def train(TRAIN_PATHS: dict[str, str], TEST_PATHS: dict[str, str]) -> None:
 
 if __name__ == "__main__":
 
-    # this path must be adapted to your own machine
-    root_dir = os.getcwd() + "/"  # "/home/davidparham/Workspaces/DTU/MLOps/project/"
-
-    TRAIN_PATHS = {
-        "images": root_dir + "data/preprocessed/covid_not_norm/train_images.pt",
-        "labels": root_dir + "data/preprocessed/covid_not_norm/train_labels.pt",
-    }
-
-    TEST_PATHS = {
-        "images": root_dir + "data/preprocessed/covid_not_norm/test_images.pt",
-        "labels": root_dir + "data/preprocessed/covid_not_norm/test_labels.pt",
-    }
-
-    train(TRAIN_PATHS, TEST_PATHS)
+    train()

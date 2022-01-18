@@ -12,13 +12,14 @@
 # Module: This module is responsible accessing our data
 ######################################################################
 
+import os
 from typing import Union
 
 import torch
 import torchvision.transforms as transforms
+from omegaconf import OmegaConf
 from torch.utils.data import DataLoader, Dataset
 
-# from config import paths
 
 # TODO: Write tests for this module
 class Dataset_fetcher(Dataset):
@@ -46,12 +47,18 @@ class Dataset_fetcher(Dataset):
         return len(self.images)
 
 
-# if __name__ == "__main__":
+if __name__ == "__main__":
 
-#     # root_dir = paths.root_dir
-#     # path_img = root_dir + paths.path_img
-#     # path_lab = root_dir + paths.path_lab
+    BASE_DIR = os.getcwd()
 
-#     dataset = Dataset_fetcher(path_img, path_lab)
-#     dataloader = DataLoader(dataset, shuffle=False, num_workers=4, batch_size=3)
-#     image, label = next(iter(dataloader))
+    # Load config file
+    config = OmegaConf.load(BASE_DIR + "/config/config.yaml")
+
+    TRAIN_PATHS = {
+        "images": BASE_DIR + config.TRAIN_PATHS.images,
+        "labels": BASE_DIR + config.TRAIN_PATHS.labels,
+    }
+
+    dataset = Dataset_fetcher(TRAIN_PATHS["images"], TRAIN_PATHS["labels"])
+    dataloader = DataLoader(dataset, shuffle=False, num_workers=4, batch_size=3)
+    image, label = next(iter(dataloader))

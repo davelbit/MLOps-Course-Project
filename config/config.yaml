@@ -10,3 +10,15 @@ BEST_VAL: 100000000
 
 BEST_MODEL_PATH: "models/checkpoints/best_model.pth"
 CHECKPOINT_PATH: "models/checkpoints/"
+
+TRAIN_PATHS:
+  images: "/data/preprocessed/covid_not_norm/train_images.pt"
+  labels:  "/data/preprocessed/covid_not_norm/train_labels.pt"
+
+TEST_PATHS:
+  images: "/data/preprocessed/covid_not_norm/test_images.pt"
+  labels:  "/data/preprocessed/covid_not_norm/test_labels.pt"
+
+VAL_PATHS:
+  images: "/data/preprocessed/covid_not_norm/train_images.pt"
+  labels:  "/data/preprocessed/covid_not_norm/train_labels.pt"
