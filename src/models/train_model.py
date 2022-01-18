@@ -21,7 +21,7 @@ from dataset_fetcher import Dataset_fetcher
 from model_architecture import XrayClassifier
 from omegaconf import OmegaConf
 from torch import nn, optim
-
+from cloud_functions import upload_blob
 import wandb
 
 
