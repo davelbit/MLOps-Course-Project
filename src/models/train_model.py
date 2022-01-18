@@ -23,7 +23,7 @@ from dataset_fetcher import Dataset_fetcher
 from model_architecture import XrayClassifier
 from omegaconf import OmegaConf
 from torch import nn, optim
-
+from cloud_functions import upload_blob
 
 def train(TRAIN_PATHS: dict[str, str], TEST_PATHS: dict[str, str]) -> None:
     """This function runs the whole training procedure"""
