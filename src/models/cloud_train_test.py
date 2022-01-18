@@ -26,11 +26,10 @@ gcloud ai-platform jobs submit training ${JOB_NAME} \
 JOB_NAME=test_job
 gcloud ai-platform jobs submit training ${JOB_NAME} \
   --region=europe-west1 \
-  --master-image-uri=gcr.io/ecstatic-elf-337907/project:latest \
-  --scale-tier=BASIC \
-  --package-path=./ \
-  --module-name=src.models.cloud_train_test \
+  --master-image-uri=gcr.io/ charged-city-337910/project:latest \
   -- \
+  --module-name=src/models/cloud_train_test.py
+  --bucket-name mlops-project-6
 """
 
 
