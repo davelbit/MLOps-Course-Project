@@ -1,8 +1,9 @@
-kornia==0.6.2
+hydra-core==1.1.1
 matplotlib==3.5.0
 numpy==1.21.2
-opencv_python==4.5.5.62
+omegaconf==2.1.1
 Pillow==9.0.0
+protobuf==3.19.3
 python-dotenv==0.19.2
 requests==2.26.0
 scikit_learn==1.0.2

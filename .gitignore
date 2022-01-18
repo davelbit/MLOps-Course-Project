@@ -144,3 +144,12 @@ dmypy.json
 
 #precommit
 interrogate_badge.svg
+
+
+#checkpoints
+
+checkpoints/
+
+#wandb
+
+wandb/
