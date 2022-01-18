@@ -23,13 +23,11 @@ gcloud ai-platform jobs submit training ${JOB_NAME} \
 """
 
 """
-JOB_NAME=test_job
+JOB_NAME=test_job4
 gcloud ai-platform jobs submit training ${JOB_NAME} \
   --region=europe-west1 \
-  --master-image-uri=gcr.io/ charged-city-337910/project:latest \
-  -- \
-  --module-name=src/models/cloud_train_test.py
-  --bucket-name mlops-project-6
+  --master-image-uri=gcr.io/charged-city-337910/project:latest \
+  --config=config/gcloud_ai_config.yaml
 """
 
 
@@ -78,7 +76,7 @@ def run():
     parser.add_argument(
         "--bucket-name",
         type=str,
-        default="mlops-project-6",
+        default="mlops_dtu_covid_project",
         help="name of gs bucket",
     )
 
@@ -87,6 +85,8 @@ def run():
     bucket_name = args.bucket_name
 
     figname = "reports/figures/example.png"
+    if not os.path.isdir('/'.join([i for i in figname.split('/')[:-1]])):
+        os.makedirs('/'.join([i for i in figname.split('/')[:-1]]))
     x, y = np.random.randint(0, 100, 20), np.random.randint(0, 1000, 20)
 
     imgs = torch.load(args.image_file)
