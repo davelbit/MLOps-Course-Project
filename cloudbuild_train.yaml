@@ -1,10 +1,10 @@
 steps:
 - name: 'gcr.io/cloud-builders/docker'
   entrypoint: 'bash'
-  args: ['-c','docker build --build-arg WANDB_TOKEN=$$DBTOKEN -t gcr.io/charged-city-337910/project -f train.Dockerfile .']
+  args: ['-c','docker build --build-arg WANDB_TOKEN=$$DBTOKEN -t gcr.io/charged-city-337910/train -f train.Dockerfile .']
   secretEnv: ['DBTOKEN']
 - name: 'gcr.io/cloud-builders/docker'
-  args: ['push', 'gcr.io/charged-city-337910/project']
+  args: ['push', 'gcr.io/charged-city-337910/train']
 availableSecrets:
   secretManager:
   - versionName: projects/303765552416/secrets/wandb/versions/latest

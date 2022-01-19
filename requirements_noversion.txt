@@ -1,7 +1,0 @@
-numpy
-python-dotenv
-requests
-setuptools
-torch
-torchvision
-tqdm
