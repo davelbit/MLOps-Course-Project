@@ -1,7 +1,7 @@
 # MLOps-Course-Project
 
 ### **About the project**
-This project was the final project at DTU [Technical University of Denmark](https://www.dtu.dk/) for the 3 Week January course [Machine Learning Operations](https://kurser.dtu.dk/course/02476) in 2022.
+This project is the final project at DTU [Technical University of Denmark](https://www.dtu.dk/) for the 3 Week January course [Machine Learning Operations](https://kurser.dtu.dk/course/02476) in 2022.
 
 > Course material at [Github](https://skaftenicki.github.io/dtu_mlops/).
 
@@ -62,6 +62,9 @@ Project Structure
     │
     ├── requirements.txt   <- The requirements file for reproducing the analysis environment, e.g.
     │                         generated with `pip freeze > requirements.txt`
+    │ 
+    ├── config              <- Contains the config .yaml files for different constants and 
+    │                          hyperparameters in the project.
     │
     ├── setup.py           <- makes project pip installable (pip install -e .) so src can be imported
     ├── src                <- Source code for use in this project.
@@ -80,6 +83,8 @@ Project Structure
     │   │
     │   └── visualization  <- Scripts to create exploratory and results oriented visualizations
     │       └── visualize.py
+    │
+    ├── setup.py           <- makes project pip installable (pip install -e .) so src can be imported
     │
     └── tox.ini            <- tox file with settings for running tox; s3ee tox.readthedocs.io
 
