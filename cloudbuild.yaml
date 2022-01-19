@@ -6,5 +6,5 @@ steps:
   args: ['push', 'gcr.io/charged-city-337910/project']
 availableSecrets:
   secretManager:
-  - versionName: projects/303765552416/secrets/wandb
+  - versionName: projects/303765552416/secrets/wandb/versions/latest
     env: 'wandb'
