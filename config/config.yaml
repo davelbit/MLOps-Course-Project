@@ -13,6 +13,7 @@ CHECKPOINT_PATH: "models/checkpoints/"
 
 BUCKET_NAME: "mlops_dtu_covid_project"
 BUCKET_PATH: "models/"
+BUCKET_BEST_MODEL: "models/D19012022T120022best_model.pth"
 
 TRAIN_PATHS:
   images: "/data/preprocessed/covid_not_norm/train_images.pt"

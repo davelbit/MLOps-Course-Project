@@ -85,7 +85,7 @@ class check_size_and_gray(object):
         return img
 
 
-def sizeof_fmt(num : float, suffix="B"):
+def sizeof_fmt(num: float, suffix="B"):
     """by Fred Cirera,  https://stackoverflow.com/a/1094933/1870254, modified"""
     for unit in ["", "Ki", "Mi", "Gi", "Ti", "Pi", "Ei", "Zi"]:
         if abs(num) < 1024.0:
@@ -93,11 +93,13 @@ def sizeof_fmt(num : float, suffix="B"):
         num /= 1024.0
     return "%.1f %s%s" % (num, "Yi", suffix)
 
+
 def sizetorch(value):
     try:
         return sys.getsizeof(value.storage())
     except:
         return sys.getsizeof(value)
+
 
 def preprocess(
     path: str,
@@ -164,9 +166,9 @@ def preprocess(
         random_state=seed,
     )
 
-    len2test=int(len(test_indices)/2)
-    valid_indices=test_indices[len2test:]
-    test_indices=test_indices[:len2test]
+    len2test = int(len(test_indices) / 2)
+    valid_indices = test_indices[len2test:]
+    test_indices = test_indices[:len2test]
 
     train_images = all_images_gray512[train_indices].float().clone()
     test_images = all_images_gray512[test_indices].float().clone()
@@ -175,8 +177,6 @@ def preprocess(
     train_labels = np.array(labels)[train_indices]
     test_labels = np.array(labels)[test_indices]
     valid_labels = np.array(labels)[valid_indices]
-
-
 
     for name, size in sorted(
         ((name, sizetorch(value)) for name, value in locals().items()), key=lambda x: -x[1]

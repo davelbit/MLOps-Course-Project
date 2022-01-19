@@ -85,8 +85,8 @@ def run():
     bucket_name = args.bucket_name
 
     figname = "reports/figures/example.png"
-    if not os.path.isdir('/'.join([i for i in figname.split('/')[:-1]])):
-        os.makedirs('/'.join([i for i in figname.split('/')[:-1]]))
+    if not os.path.isdir("/".join([i for i in figname.split("/")[:-1]])):
+        os.makedirs("/".join([i for i in figname.split("/")[:-1]]))
     x, y = np.random.randint(0, 100, 20), np.random.randint(0, 1000, 20)
 
     imgs = torch.load(args.image_file)

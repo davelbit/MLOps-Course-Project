@@ -18,7 +18,9 @@ from typing import List
 import numpy as np
 import torch
 from dataset_fetcher import Dataset_fetcher
+from cloud_functions import loadCheckpointFromGCP
 from matplotlib import pyplot as plt
+import omegaconf
 from omegaconf import OmegaConf
 from torch import nn
 from tqdm import tqdm
@@ -26,13 +28,21 @@ from tqdm import tqdm
 import wandb
 
 
-def get_model_from_checkpoint(path: str) -> nn.Module:
+def get_model_from_checkpoint(
+    config: omegaconf.dictconfig.DictConfig,
+    cloudModel: bool = True
+) -> nn.Module:
     """Returns a loaded model from checkpoint"""
 
     from model_architecture import XrayClassifier
 
     model = XrayClassifier()
-    checkpoint = torch.load(path)
+    if cloudModel:
+        print("[INFO] Load model from cloud...")
+        checkpoint = loadCheckpointFromGCP(config)
+    else:
+        print("[INFO] Load model from disk...")
+        checkpoint = torch.load(config.BEST_MODEL_PATH)
     model.load_state_dict(checkpoint["model_state_dict"])
     return model
 
@@ -100,7 +110,7 @@ def inference(model: nn.Module = None, load_model: bool = False) -> None:
 
     if load_model:
         # Loading saved model
-        model = get_model_from_checkpoint(config.BEST_MODEL_PATH)
+        model = get_model_from_checkpoint(config)
 
     wandb.watch(model, log_freq=100)
 

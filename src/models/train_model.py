@@ -90,7 +90,7 @@ def train() -> None:
         correct = 0
         total = 0
 
-        for count,(images, labels) in enumerate(trainloader):
+        for count, (images, labels) in enumerate(trainloader):
             optimizer.zero_grad(set_to_none=True)
 
             output = model(images)
