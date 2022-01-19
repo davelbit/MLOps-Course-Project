@@ -7,27 +7,23 @@ import os
 import torch
 
 """
-gcloud ai-platform jobs submit training ${JOB_NAME} \
-  --region=us-central1 \
-  --master-image-uri=gcr.io/cloud-ml-public/training/pytorch-xla.1-10 \
-  --scale-tier=BASIC \
-  --job-dir=${JOB_DIR} \
-  --package-path=./trainer \
-  --module-name=trainer.task \
-  -- \
-  --train-files=gs://cloud-samples-data/ai-platform/chicago_taxi/training/small/taxi_trips_train.csv \
-  --eval-files=gs://cloud-samples-data/ai-platform/chicago_taxi/training/small/taxi_trips_eval.csv \
-  --num-epochs=10 \
-  --batch-size=100 \
-  --learning-rate=0.001
-"""
-
-"""
 JOB_NAME=test_job6
 gcloud ai-platform jobs submit training ${JOB_NAME} \
   --region=europe-west1 \
   --master-image-uri=gcr.io/charged-city-337910/project:latest \
   --config=config/gcloud_ai_config.yaml
+"""
+
+"""
+JOB_NAME=train5
+gcloud ai-platform jobs submit training ${JOB_NAME} \
+  --region=europe-west1 \
+  --master-image-uri=gcr.io/charged-city-337910/project:latest \
+  --config=config/gcloud_ai_config.yaml
+"""
+
+"""
+docker build --build-arg WANDB_TOKEN='77fd84d04670fb6689468a55cc459483104ce350' -t project:0.2 -f train.Dockerfile .
 """
 
 
