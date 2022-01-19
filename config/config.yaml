@@ -11,6 +11,9 @@ BEST_VAL: 100000000
 BEST_MODEL_PATH: "models/checkpoints/best_model.pth"
 CHECKPOINT_PATH: "models/checkpoints/"
 
+BUCKET_NAME: "mlops_dtu_covid_project"
+BUCKET_PATH: "models/"
+
 TRAIN_PATHS:
   images: "/data/preprocessed/covid_not_norm/train_images.pt"
   labels:  "/data/preprocessed/covid_not_norm/train_labels.pt"

@@ -1,6 +1,6 @@
 
 from google.cloud import storage
-
+from datetime import datetime
 
 def upload_blob(bucket_name, source_file_name, destination_blob_name):
     """Uploads a file to the bucket."""
@@ -18,3 +18,11 @@ def upload_blob(bucket_name, source_file_name, destination_blob_name):
     blob.upload_from_filename(source_file_name)
 
     print("File {} uploaded to {}.".format(source_file_name, destination_blob_name))
+
+
+def uploadModelwithTimestamp(config):
+    print("[INFO] Uploading best model...")
+    now = datetime.now()
+    timestamp=now.strftime("D%d%m%YT%H%M%S")
+    best_model_gcp_path=config.BUCKET_PATH+timestamp+config.BEST_MODEL_PATH.split('/')[-1]
+    upload_blob(config.BUCKET_NAME,config.BEST_MODEL_PATH,best_model_gcp_path)
