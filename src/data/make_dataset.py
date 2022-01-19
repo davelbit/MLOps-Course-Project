@@ -1,12 +1,12 @@
 # -*- coding: utf-8 -*-
 import argparse
-from distutils.command import config
 
 # import io
 import logging
 import os
 import sys
 import zipfile
+from distutils.command import config
 from pathlib import Path
 
 # import cv2
@@ -17,10 +17,10 @@ import requests
 import torch
 import torchvision
 from dotenv import find_dotenv, load_dotenv
+from omegaconf import OmegaConf
 from PIL import Image
 from sklearn.model_selection import train_test_split
 from tqdm import tqdm
-from omegaconf import OmegaConf
 
 config = OmegaConf.load("config/data.yaml")
 
