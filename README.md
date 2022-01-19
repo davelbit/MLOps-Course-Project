@@ -50,6 +50,7 @@ Project Structure
     ├── docs               <- A default Sphinx project; see sphinx-doc.org for details
     │
     ├── models             <- Trained and serialized models, model predictions, or model summaries
+    │   └── checkpoints    <- Contains model checkpoints at different stages.
     │
     ├── notebooks          <- Jupyter notebooks. Naming convention is a number (for ordering),
     │                         the creator's initials, and a short `-` delimited description, e.g.
@@ -63,10 +64,11 @@ Project Structure
     ├── requirements.txt   <- The requirements file for reproducing the analysis environment, e.g.
     │                         generated with `pip freeze > requirements.txt`
     │ 
-    ├── config              <- Contains the config .yaml files for different constants and 
+    ├── config             <- Contains the config .yaml files for different constants and 
     │                          hyperparameters in the project.
     │
-    ├── setup.py           <- makes project pip installable (pip install -e .) so src can be imported
+    ├── tests              <- Contains the pytest test cases for different functionalities. 
+    │
     ├── src                <- Source code for use in this project.
     │   ├── __init__.py    <- Makes src a Python module
     │   │
@@ -78,7 +80,11 @@ Project Structure
     │   │
     │   ├── models         <- Scripts to train models and then use trained models to make
     │   │   │                 predictions
-    │   │   ├── predict_model.py
+    │   │   ├── cloud_functions.py
+    │   │   ├── cloud_train_test.py
+    │   │   ├── dataset_fetcher.py  
+    │   │   ├── model_architecture.py  
+    │   │   ├── predict_model.py  
     │   │   └── train_model.py
     │   │
     │   └── visualization  <- Scripts to create exploratory and results oriented visualizations
