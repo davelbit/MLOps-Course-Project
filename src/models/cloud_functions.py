@@ -3,7 +3,6 @@ from datetime import datetime
 import torch
 import io
 
-
 def upload_blob(bucket_name, source_file_name, destination_blob_name):
     """Uploads a file to the bucket."""
     # The ID of your GCS bucket
