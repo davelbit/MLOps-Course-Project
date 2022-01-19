@@ -1,5 +1,10 @@
 steps:
 - name: 'gcr.io/cloud-builders/docker'
-  args: ['build', '-t', 'gcr.io/charged-city-337910/project','-f','train.Dockerfile','.']
+  args: ['build','--build-arg', 'WANDB_TOKEN=$$wandb', '-t', 'gcr.io/charged-city-337910/project','-f','train.Dockerfile','.']
+  secretEnv: ['wandb']
 - name: 'gcr.io/cloud-builders/docker'
   args: ['push', 'gcr.io/charged-city-337910/project']
+availableSecrets:
+  secretManager:
+  - versionName: projects/303765552416/secrets/wandb
+    env: 'wandb'

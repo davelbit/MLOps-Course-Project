@@ -29,8 +29,7 @@ import wandb
 
 
 def get_model_from_checkpoint(
-    config: omegaconf.dictconfig.DictConfig,
-    cloudModel: bool = True
+    config: omegaconf.dictconfig.DictConfig, cloudModel: bool = True
 ) -> nn.Module:
     """Returns a loaded model from checkpoint"""
 
