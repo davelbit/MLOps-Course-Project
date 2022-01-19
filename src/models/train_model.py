@@ -184,4 +184,9 @@ if __name__ == "__main__":
         "labels": root_dir + "data/preprocessed/covid_not_norm/test_labels.pt",
     }
 
+    VALID_PATHS = {
+        "images": root_dir + "data/preprocessed/covid_not_norm/valid_images.pt",
+        "labels": root_dir + "data/preprocessed/covid_not_norm/valid_labels.pt",
+    }
+
     train(TRAIN_PATHS, TEST_PATHS)
