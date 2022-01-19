@@ -1,33 +1,41 @@
-MLOps-Course-Project
-==============================
+# MLOps-Course-Project
 
-[Checkout the course](https://skaftenicki.github.io/dtu_mlops/)
+### **About the project**
+This project was the final project at DTU [Technical University of Denmark](https://www.dtu.dk/) for the 3 Week January course [Machine Learning Operations](https://kurser.dtu.dk/course/02476) in 2022.
 
-The goal of this project is to get familiar with the best practices of MLOps. In the center is not the output of a neural network, everything around it as: code structure, code/data/model version control, logging, debugging, containerisation, deployment, monitoring...
+> Course material at [Github](https://skaftenicki.github.io/dtu_mlops/).
+
+### **Authors**
+
+* [David Anthony Parham](https://github.com/davelbit) (s202385)
+* [Rian Leevinson](https://github.com/RianLeevinson) (s202540)
+*  [Stefan Nahstoll](https://github.com/StefanNa) (s193647)
+*  [Abhista Partal Balasubramaniam](https://github.com/AbhistaPB) (s210246)
+
+## **Primary Project Objective**
+
+The aim of this project is to familiarize ourselves with the use and best practices of the entire tech stack required for [Machine Learning Operations](https://en.wikipedia.org/wiki/MLOps).
+
+### **This includes:**
+- Running and tracking experiments ([wandb](https://wandb.ai))
+- Code structure and ([cookiecutter](https://github.com/drivendata/cookiecutter-data-science), [formatters](https://github.com/psf/black), etc.)
+- Working with config files ([hydra](https://hydra.cc/docs/configure_hydra/intro/), [OmegaConf](https://omegaconf.readthedocs.io/en/2.1_branch/index.html))
+- Code and data versioning ([git](https://git-scm.com/), [dvc](https://dvc.org/))
+- Containerization ([Docker](https://www.docker.com/))
+- Working in the cloud ([Google Cloud Platform](https://console.cloud.google.com/))
+
+## **Secondary Project Objective**
+
+Construct Training, Testing and Validation sets from the [Mendeley Data](https://data.mendeley.com/datasets/jctsfj2sfn/1) and train a Convolutional Neural Network (CNN) to classify different X-Ray images of patient lungs as being infected with Covid-19, Pneumonia or no diseases (labeled as normal).
+
+> Additionally we should try to incorporate the computer vision framework [Kornia](https://github.com/kornia/kornia) in a suitable way.
+
+## **Sample images from the Mendeley Data**
+<img src="data/external/data_preview.png" alt="Demonstration of the data" width="640"/>
 
 
-The project is build around a classification task. Different X-Rays of patients lungs will be classified in covid-19, pneumonia and normal. 
-The dataset is from [Mendeley Data](https://data.mendeley.com/datasets/jctsfj2sfn/1) where all classes are represented equally.
-The images are black and white with either 1 or 3 Channels.
-A convolutional neural network (CNN) will be trained on 80% of the total 4575 samples. Tests will be performed on th eremaining 20%.
 
-In this project the framework [Kornia](https://github.com/kornia/kornia) will be used primarily for data preprocessing and augmentation. (Maybe we find a usecase for post processing.)
-
-Concepts and tools to be used:
-* codestructure : [Cookiecutter](https://drivendata.github.io/cookiecutter-data-science/)
-* Typehinmting?
-* Docker
-* Data Version Control via Google Drive
-* experiment logging with hydra+omegaconf
-* 
-*
-*
-
-
-Convolutional Neural Network Architecture
-------------
-
-Project Organization
+Project Structure
 ------------
 
     ├── LICENSE
