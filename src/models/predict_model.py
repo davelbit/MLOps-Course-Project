@@ -88,6 +88,8 @@ def inference(model: nn.Module = None, load_model: bool = False) -> None:
     config = OmegaConf.load(BASE_DIR + "/config/config.yaml")
 
     # Initialize logging with wandb and track conf settings
+    WANDB_API = os.getenv("WANDB_API")
+    wandb.login(key=WANDB_API)
     wandb.init(project="MLOps-Project")
 
     # Optimizer Hyperparameter / const variables
