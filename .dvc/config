@@ -1,5 +1,4 @@
 [core]
     remote = remote_storage
-    no_scm = true
 ['remote "remote_storage"']
-    url = gs://mlops-project-6/project6
+    url = gs://mlops_dtu_covid_project/data

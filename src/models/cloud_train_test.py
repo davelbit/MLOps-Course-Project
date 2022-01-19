@@ -23,7 +23,7 @@ gcloud ai-platform jobs submit training ${JOB_NAME} \
 """
 
 """
-JOB_NAME=test_job4
+JOB_NAME=test_job6
 gcloud ai-platform jobs submit training ${JOB_NAME} \
   --region=europe-west1 \
   --master-image-uri=gcr.io/charged-city-337910/project:latest \
