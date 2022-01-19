@@ -85,6 +85,20 @@ class check_size_and_gray(object):
         return img
 
 
+def sizeof_fmt(num : float, suffix="B"):
+    """by Fred Cirera,  https://stackoverflow.com/a/1094933/1870254, modified"""
+    for unit in ["", "Ki", "Mi", "Gi", "Ti", "Pi", "Ei", "Zi"]:
+        if abs(num) < 1024.0:
+            return "%3.1f %s%s" % (num, unit, suffix)
+        num /= 1024.0
+    return "%.1f %s%s" % (num, "Yi", suffix)
+
+def sizetorch(value):
+    try:
+        return sys.getsizeof(value.storage())
+    except:
+        return sys.getsizeof(value)
+
 def preprocess(
     path: str,
     plotsample: bool = False,
@@ -140,7 +154,7 @@ def preprocess(
             plt.savefig(figpath + "/" + "sample" + str(number) + ".png")
             del samples
 
-    validation_split = 0.3
+    validation_split = 0.4
     seed = 42
     train_indices, test_indices, _, _ = train_test_split(
         range(len(all_images_gray512)),
@@ -150,24 +164,19 @@ def preprocess(
         random_state=seed,
     )
 
-    def sizeof_fmt(num, suffix="B"):
-        """by Fred Cirera,  https://stackoverflow.com/a/1094933/1870254, modified"""
-        for unit in ["", "Ki", "Mi", "Gi", "Ti", "Pi", "Ei", "Zi"]:
-            if abs(num) < 1024.0:
-                return "%3.1f %s%s" % (num, unit, suffix)
-            num /= 1024.0
-        return "%.1f %s%s" % (num, "Yi", suffix)
+    len2test=int(len(test_indices)/2)
+    valid_indices=test_indices[len2test:]
+    test_indices=test_indices[:len2test]
 
     train_images = all_images_gray512[train_indices].float().clone()
     test_images = all_images_gray512[test_indices].float().clone()
+    valid_images = all_images_gray512[valid_indices].float().clone()
+
     train_labels = np.array(labels)[train_indices]
     test_labels = np.array(labels)[test_indices]
+    valid_labels = np.array(labels)[valid_indices]
 
-    def sizetorch(value):
-        try:
-            return sys.getsizeof(value.storage())
-        except:
-            return sys.getsizeof(value)
+
 
     for name, size in sorted(
         ((name, sizetorch(value)) for name, value in locals().items()), key=lambda x: -x[1]
@@ -188,6 +197,12 @@ def preprocess(
     del test_images
     torch.save(torch.from_numpy(test_labels), output_filepath + "test_labels.pt")
     del test_labels
+
+    torch.save(valid_images, output_filepath + "valid_images.pt")
+    del valid_images
+    torch.save(torch.from_numpy(valid_labels), output_filepath + "valid_labels.pt")
+    del valid_labels
+
     del all_images_gray512
 
 
@@ -215,7 +230,7 @@ def main():
         default="COVID19_Pneumonia_Normal_Chest_Xray_PA_Dataset",
         help="name of dir to be extracted",
     )
-    parser.add_argument("--maxperclass", type=int, default=100, help="maximum imgs per class")
+    parser.add_argument("--maxperclass", type=int, default=200, help="maximum imgs per class")
     parser.add_argument("-plotsample", action="store_true")
     args = parser.parse_args()
     zip_file_url = args.url
