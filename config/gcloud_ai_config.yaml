@@ -1,5 +1,4 @@
 trainingInput:
   scaleTier: BASIC
   masterConfig:
-    containerCommand: ["python3", "src/models/cloud_train_test.py"]
-    containerArgs: ['--bucket-name=mlops_dtu_covid_project']
+    containerCommand: ["python3", "src/models/train_model.py"]

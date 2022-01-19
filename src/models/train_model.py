@@ -17,11 +17,12 @@ import time
 
 import numpy as np
 import torch
+from cloud_functions import uploadModelwithTimestamp
 from dataset_fetcher import Dataset_fetcher
 from model_architecture import XrayClassifier
 from omegaconf import OmegaConf
 from torch import nn, optim
-from cloud_functions import upload_blob
+
 import wandb
 
 
@@ -38,6 +39,8 @@ def train() -> None:
     config = OmegaConf.load(BASE_DIR + "/config/config.yaml")
 
     # Initialize logging with wandb and track conf settings
+    WANDB_API = os.getenv("WANDB_API")
+    wandb.login(key=WANDB_API)
     wandb.init(project="MLOps-Project", config=dict(config))
 
     # Optimizer Hyperparameter
@@ -151,6 +154,8 @@ def train() -> None:
         if val_loss < best_val:
             best_val = val_loss
             print("\n[INFO] Saving new best_model...\n")
+            if not os.path.isdir('/'.join(config.BEST_MODEL_PATH.split('/')[:-1])):
+                os.makedirs('/'.join(config.BEST_MODEL_PATH.split('/')[:-1]))
             torch.save(
                 {
                     "epoch": epoch + 1,
@@ -177,7 +182,7 @@ def train() -> None:
 
     # if checkpoint folder is meant to be saved for each experiment
     # wandb.save(config.CHECKPOINT_PATH)
-
+    uploadModelwithTimestamp(config)
     print(f"[INFO] Successfully completed training session. Running time: {run_time/60:.2f} min")
 
 

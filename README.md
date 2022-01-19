@@ -1,79 +1,100 @@
-MLOps-Course-Project
-==============================
+# MLOps-Course-Project
 
-[Checkout the course](https://skaftenicki.github.io/dtu_mlops/)
+### **About the project**
+This project is the final project at DTU [Technical University of Denmark](https://www.dtu.dk/) for the 3 Week January course [Machine Learning Operations](https://kurser.dtu.dk/course/02476) in 2022.
 
-The goal of this project is to get familiar with the best practices of MLOps. In the center is not the output of a neural network, everything around it as: code structure, code/data/model version control, logging, debugging, containerisation, deployment, monitoring...
+> Course material at [Github](https://skaftenicki.github.io/dtu_mlops/).
+
+### **Authors**
+
+* [David Anthony Parham](https://github.com/davelbit) (s202385)
+* [Rian Leevinson](https://github.com/RianLeevinson) (s202540)
+*  [Stefan Nahstoll](https://github.com/StefanNa) (s193647)
+*  [Abhista Partal Balasubramaniam](https://github.com/AbhistaPB) (s210246)
+
+## **Primary Project Objective**
+
+The aim of this project is to familiarize ourselves with the use and best practices of the entire tech stack required for [Machine Learning Operations](https://en.wikipedia.org/wiki/MLOps).
+
+### **This includes:**
+- Running and tracking experiments ([wandb](https://wandb.ai))
+- Code structure and ([cookiecutter](https://github.com/drivendata/cookiecutter-data-science), [formatters](https://github.com/psf/black), etc.)
+- Working with config files ([hydra](https://hydra.cc/docs/configure_hydra/intro/), [OmegaConf](https://omegaconf.readthedocs.io/en/2.1_branch/index.html))
+- Code and data versioning ([git](https://git-scm.com/), [dvc](https://dvc.org/))
+- Containerization ([Docker](https://www.docker.com/))
+- Working in the cloud ([Google Cloud Platform](https://console.cloud.google.com/))
+
+## **Secondary Project Objective**
+
+Construct Training, Testing and Validation sets from the [Mendeley Data](https://data.mendeley.com/datasets/jctsfj2sfn/1) and train a Convolutional Neural Network (CNN) to classify different X-Ray images of patient lungs as being infected with Covid-19, Pneumonia or no diseases (labeled as normal).
+
+> Additionally we should try to incorporate the computer vision framework [Kornia](https://github.com/kornia/kornia) in a suitable way.
+
+## **Sample images from the Mendeley Data**
+<img src="data/external/data_preview.png" alt="Demonstration of the data" width="640"/>
 
 
-The project is build around a classification task. Different X-Rays of patients lungs will be classified in covid-19, pneumonia and normal. 
-The dataset is from [Mendeley Data](https://data.mendeley.com/datasets/jctsfj2sfn/1) where all classes are represented equally.
-The images are black and white with either 1 or 3 Channels.
-A convolutional neural network (CNN) will be trained on 80% of the total 4575 samples. Tests will be performed on th eremaining 20%.
 
-In this project the framework [Kornia](https://github.com/kornia/kornia) will be used primarily for data preprocessing and augmentation. (Maybe we find a usecase for post processing.)
-
-Concepts and tools to be used:
-* codestructure : [Cookiecutter](https://drivendata.github.io/cookiecutter-data-science/)
-* Typehinmting?
-* Docker
-* Data Version Control via Google Drive
-* experiment logging with hydra+omegaconf
-* 
-*
-*
-
-
-Convolutional Neural Network Architecture
-------------
-
-Project Organization
+Project Structure
 ------------
 
     ├── LICENSE
-    ├── Makefile           <- Makefile with commands like `make data` or `make train`
-    ├── README.md          <- The top-level README for developers using this project.
+    │
+    ├── Makefile                            <- Makefile with commands like `make data` or `make train`
+    │
+    ├── README.md                           <- The top-level README for developers using this project.
     ├── data
-    │   ├── external       <- Data from third party sources.
-    │   ├── interim        <- Intermediate data that has been transformed.
-    │   ├── processed      <- The final, canonical data sets for modeling.
-    │   └── raw            <- The original, immutable data dump.
+    │   ├── external                        <- Data from third party sources.
+    │   ├── interim                         <- Intermediate data that has been transformed.
+    │   ├── processed                       <- The final, canonical data sets for modeling.
+    │   └── raw                             <- The original, immutable data dump.
     │
-    ├── docs               <- A default Sphinx project; see sphinx-doc.org for details
+    ├── docs                                <- A default Sphinx project; see sphinx-doc.org for details
     │
-    ├── models             <- Trained and serialized models, model predictions, or model summaries
+    ├── models                              <- Trained and serialized models, model predictions, or model summaries
+    │   └── checkpoints                     <- Contains model checkpoints at different stages.
     │
-    ├── notebooks          <- Jupyter notebooks. Naming convention is a number (for ordering),
-    │                         the creator's initials, and a short `-` delimited description, e.g.
-    │                         `1.0-jqp-initial-data-exploration`.
+    ├── notebooks                           <- Jupyter notebooks. Naming convention is a number (for ordering),
+    │                                           the creator's initials, and a short `-` delimited description, e.g.
+    │                                            `1.0-jqp-initial-data-exploration`.
     │
-    ├── references         <- Data dictionaries, manuals, and all other explanatory materials.
+    ├── references                          <- Data dictionaries, manuals, and all other explanatory materials.
     │
-    ├── reports            <- Generated analysis as HTML, PDF, LaTeX, etc.
-    │   └── figures        <- Generated graphics and figures to be used in reporting
+    ├── reports                             <- Generated analysis as HTML, PDF, LaTeX, etc.
+    │   └── figures                         <- Generated graphics and figures to be used in reporting
     │
-    ├── requirements.txt   <- The requirements file for reproducing the analysis environment, e.g.
-    │                         generated with `pip freeze > requirements.txt`
+    ├── requirements.txt                    <- The requirements file for reproducing the analysis environment, e.g.
+    │                                           generated with `pip freeze > requirements.txt`
+    │ 
+    ├── config                              <- Contains the config .yaml files for different constants and 
+    │                                           hyperparameters in the project.
     │
-    ├── setup.py           <- makes project pip installable (pip install -e .) so src can be imported
-    ├── src                <- Source code for use in this project.
-    │   ├── __init__.py    <- Makes src a Python module
+    ├── tests                               <- Contains the pytest test cases for different functionalities. 
+    │
+    ├── src                                 <- Source code for use in this project.
+    │   ├── __init__.py                     <- Makes src a Python module
     │   │
-    │   ├── data           <- Scripts to download or generate data
+    │   ├── data                            <- Scripts to download or generate data
     │   │   └── make_dataset.py
     │   │
-    │   ├── features       <- Scripts to turn raw data into features for modeling
+    │   ├── features                        <- Scripts to turn raw data into features for modeling
     │   │   └── build_features.py
     │   │
-    │   ├── models         <- Scripts to train models and then use trained models to make
-    │   │   │                 predictions
-    │   │   ├── predict_model.py
-    │   │   └── train_model.py
+    │   ├── models                          <- Scripts to train models and then use trained models to make
+    │   │   │                                   predictions
+    │   │   ├── cloud_functions.py          <- Script to run gcp functions
+    │   │   ├── cloud_train_test.py         <- Script to train and test the model on cloud 
+    │   │   ├── dataset_fetcher.py          <- Data fetcher to access the data
+    │   │   ├── model_architecture.py       <- Script with the architecture of the CNN model 
+    │   │   ├── predict_model.py            <- Script that performs prediction on the data 
+    │   │   └── train_model.py              <- Training loop script
     │   │
-    │   └── visualization  <- Scripts to create exploratory and results oriented visualizations
+    │   └── visualization                   <- Scripts to create exploratory and results oriented visualizations
     │       └── visualize.py
     │
-    └── tox.ini            <- tox file with settings for running tox; s3ee tox.readthedocs.io
+    ├── setup.py                            <- makes project pip installable (pip install -e .) so src can be imported
+    │
+    └── tox.ini                             <- tox file with settings for running tox; s3ee tox.readthedocs.io
 
 
 --------

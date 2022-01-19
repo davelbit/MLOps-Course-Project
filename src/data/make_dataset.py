@@ -6,6 +6,7 @@ import logging
 import os
 import sys
 import zipfile
+from distutils.command import config
 from pathlib import Path
 
 # import cv2
@@ -16,20 +17,23 @@ import requests
 import torch
 import torchvision
 from dotenv import find_dotenv, load_dotenv
+from omegaconf import OmegaConf
 from PIL import Image
 from sklearn.model_selection import train_test_split
 from tqdm import tqdm
 
-url = "https://data.mendeley.com/public-files/datasets/jctsfj2sfn/files/148dd4e7-636b-404b-8a3c-6938158bc2c0/file_downloaded"
+
+config = OmegaConf.load("config/data.yaml")
+url = config.URL
 
 
 def download_extract(
     zip_file_url: str,
     PATH,
-    filename: str = "covid19-pneumonia-normal-chest-xraypa-dataset.zip",
-    foldername: str = "COVID19_Pneumonia_Normal_Chest_Xray_PA_Dataset",
-    chunk_size: int = 1024,
-):
+    filename: str = config.FILENAME,
+    foldername: str = config.FOLDERNAME,
+    chunk_size: int = config.CHUNK_SIZE,
+) -> None:
     """
     Script to download dataset zip into raw folder
     zip_file_url : url to download file from
@@ -69,6 +73,8 @@ def download_extract(
 
 
 class check_size_and_gray(object):
+    """Class to check the shape and size of the images"""
+
     def __init__(self, transform):
         self.transform = transform
 
@@ -85,12 +91,33 @@ class check_size_and_gray(object):
         return img
 
 
+def sizeof_fmt(num: float, suffix="B"):
+    """by Fred Cirera,  https://stackoverflow.com/a/1094933/1870254, modified"""
+
+    for unit in ["", "Ki", "Mi", "Gi", "Ti", "Pi", "Ei", "Zi"]:
+        if abs(num) < 1024.0:
+            return "%3.1f %s%s" % (num, unit, suffix)
+        num /= 1024.0
+    return "%.1f %s%s" % (num, "Yi", suffix)
+
+
+def sizetorch(value):
+    """function to return size of objects"""
+
+    try:
+        return sys.getsizeof(value.storage())
+    except:
+        return sys.getsizeof(value)
+
+
 def preprocess(
     path: str,
-    plotsample: bool = False,
-    output_filepath: str = "data/preprocessed/covid_not_norm/",
-    maxperclass: int = 10000,
-):
+    plotsample: bool = config.PLOT_SAMPLE,
+    output_filepath: str = config.OUTPUT_FILEPATH,
+    maxperclass: int = config.MAX_PER_CLASS,
+) -> None:
+    """Performs preprocessing operations and transformations on the data"""
+
     classes = [name for name in os.listdir(path) if os.path.isdir(os.path.join(path, name))]
     classes = np.sort(classes)
     class_map = {name: c for c, name in enumerate(classes)}
@@ -128,7 +155,7 @@ def preprocess(
         all_images_gray512[c, :, :, :] = img_gray512
 
     if plotsample:
-        figpath = "reports/figures"
+        figpath = config.FIG_PATH
         if not os.path.isdir(figpath):
             os.makedirs(figpath)
         for number in range(5):
@@ -140,7 +167,7 @@ def preprocess(
             plt.savefig(figpath + "/" + "sample" + str(number) + ".png")
             del samples
 
-    validation_split = 0.3
+    validation_split = 0.4
     seed = 42
     train_indices, test_indices, _, _ = train_test_split(
         range(len(all_images_gray512)),
@@ -150,24 +177,17 @@ def preprocess(
         random_state=seed,
     )
 
-    def sizeof_fmt(num, suffix="B"):
-        """by Fred Cirera,  https://stackoverflow.com/a/1094933/1870254, modified"""
-        for unit in ["", "Ki", "Mi", "Gi", "Ti", "Pi", "Ei", "Zi"]:
-            if abs(num) < 1024.0:
-                return "%3.1f %s%s" % (num, unit, suffix)
-            num /= 1024.0
-        return "%.1f %s%s" % (num, "Yi", suffix)
+    len2test = int(len(test_indices) / 2)
+    valid_indices = test_indices[len2test:]
+    test_indices = test_indices[:len2test]
 
     train_images = all_images_gray512[train_indices].float().clone()
     test_images = all_images_gray512[test_indices].float().clone()
+    valid_images = all_images_gray512[valid_indices].float().clone()
+
     train_labels = np.array(labels)[train_indices]
     test_labels = np.array(labels)[test_indices]
-
-    def sizetorch(value):
-        try:
-            return sys.getsizeof(value.storage())
-        except:
-            return sys.getsizeof(value)
+    valid_labels = np.array(labels)[valid_indices]
 
     for name, size in sorted(
         ((name, sizetorch(value)) for name, value in locals().items()), key=lambda x: -x[1]
@@ -188,6 +208,12 @@ def preprocess(
     del test_images
     torch.save(torch.from_numpy(test_labels), output_filepath + "test_labels.pt")
     del test_labels
+
+    torch.save(valid_images, output_filepath + "valid_images.pt")
+    del valid_images
+    torch.save(torch.from_numpy(valid_labels), output_filepath + "valid_labels.pt")
+    del valid_labels
+
     del all_images_gray512
 
 
@@ -195,7 +221,8 @@ def main():
     """Runs data processing scripts to turn raw data from (../raw) into
     cleaned data ready to be analyzed (saved in ../processed).
     """
-    parser = argparse.ArgumentParser(description="Data dwonloading and unzipping arguments")
+
+    parser = argparse.ArgumentParser(description="Data downloading and unzipping arguments")
     parser.add_argument(
         "--url",
         type=str,
@@ -215,7 +242,7 @@ def main():
         default="COVID19_Pneumonia_Normal_Chest_Xray_PA_Dataset",
         help="name of dir to be extracted",
     )
-    parser.add_argument("--maxperclass", type=int, default=100, help="maximum imgs per class")
+    parser.add_argument("--maxperclass", type=int, default=200, help="maximum imgs per class")
     parser.add_argument("-plotsample", action="store_true")
     args = parser.parse_args()
     zip_file_url = args.url
@@ -226,7 +253,7 @@ def main():
     plotsample = args.plotsample
 
     download_extract(zip_file_url, PATH, filename, foldername)
-    path = "data/raw/COVID19_Pneumonia_Normal_Chest_Xray_PA_Dataset"
+    path = config.RAW_DATA
     print("plotsample:", plotsample)
     preprocess(path, plotsample=plotsample, maxperclass=maxperclass)
 

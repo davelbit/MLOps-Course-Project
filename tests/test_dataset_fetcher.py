@@ -12,15 +12,19 @@
 # Module: This module is responsible for testing the dataset_fetcher
 ######################################################################
 
-# from typing import Union
+import __init__
+from dataset_fetcher import Dataset_fetcher
+from omegaconf import OmegaConf
+from torch.utils.data import DataLoader
 
-# from src.models import dataset_fetcher
+BASE_DIR = __init__.BASE_DIR
+config = OmegaConf.load(BASE_DIR + "/config/config.yaml")
 
-root_dir = "/home/rianleevinson/MLOps-Course-Project/"
-path_img = root_dir + "data/preprocessed/covid_not_norm/train_images.pt"
-path_lab = root_dir + "data/preprocessed/covid_not_norm/train_labels.pt"
+TRAIN_PATHS = {
+    "images": BASE_DIR + config.TRAIN_PATHS.images,
+    "labels": BASE_DIR + config.TRAIN_PATHS.labels,
+}
 
-
-# def test_dataset_fetcher_images():
-#     fetcher = dataset_fetcher.Dataset_fetcher()
-#     assert len(fetcher.images) > 0
+dataset = Dataset_fetcher(TRAIN_PATHS["images"], TRAIN_PATHS["labels"])
+dataloader = DataLoader(dataset, shuffle=False, num_workers=4, batch_size=3)
+image, label = next(iter(dataloader))

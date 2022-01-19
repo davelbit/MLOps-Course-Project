@@ -1,0 +1,11 @@
+steps:
+- name: 'gcr.io/cloud-builders/docker'
+  entrypoint: 'bash'
+  args: ['-c','docker build --build-arg WANDB_TOKEN=$$DBTOKEN -t gcr.io/charged-city-337910/predict -f predict.Dockerfile .']
+  secretEnv: ['DBTOKEN']
+- name: 'gcr.io/cloud-builders/docker'
+  args: ['push', 'gcr.io/charged-city-337910/predict']
+availableSecrets:
+  secretManager:
+  - versionName: projects/303765552416/secrets/wandb/versions/latest
+    env: DBTOKEN
