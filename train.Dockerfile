@@ -1,6 +1,6 @@
 FROM python:3.7-slim
 
-# install python 
+# install python
 RUN apt update && \
 apt install --no-install-recommends -y build-essential gcc && \
 apt clean && rm -rf /var/lib/apt/lists/*
@@ -32,6 +32,11 @@ COPY data/preprocessed.dvc /app/data/preprocessed.dvc
 RUN dvc config core.no_scm true
 RUN dvc pull
 
+RUN mkdir -p /app/config
+COPY config /app/config
+
 COPY src/ /app/src/
+ARG WANDB_TOKEN
+ENV WANDB_API=$WANDB_TOKEN
 
 ENTRYPOINT ["python", "-u", "src/models/train_model.py"]

@@ -39,6 +39,8 @@ def train() -> None:
     config = OmegaConf.load(BASE_DIR + "/config/config.yaml")
 
     # Initialize logging with wandb and track conf settings
+    WANDB_API = os.getenv("WANDB_API")
+    wandb.login(key=WANDB_API)
     wandb.init(project="MLOps-Project", config=dict(config))
 
     # Optimizer Hyperparameter
@@ -90,7 +92,7 @@ def train() -> None:
         correct = 0
         total = 0
 
-        for count, (images, labels) in enumerate(trainloader):
+        for images, labels in trainloader:
             optimizer.zero_grad(set_to_none=True)
 
             output = model(images)
