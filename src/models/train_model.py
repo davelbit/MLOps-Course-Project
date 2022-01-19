@@ -154,6 +154,8 @@ def train() -> None:
         if val_loss < best_val:
             best_val = val_loss
             print("\n[INFO] Saving new best_model...\n")
+            if not os.path.isdir('/'.join(config.BEST_MODEL_PATH.split('/')[:-1])):
+                os.makedirs('/'.join(config.BEST_MODEL_PATH.split('/')[:-1]))
             torch.save(
                 {
                     "epoch": epoch + 1,
