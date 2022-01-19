@@ -22,8 +22,8 @@ from PIL import Image
 from sklearn.model_selection import train_test_split
 from tqdm import tqdm
 
-config = OmegaConf.load("config/data.yaml")
 
+config = OmegaConf.load("config/data.yaml")
 url = config.URL
 
 
@@ -93,6 +93,7 @@ class check_size_and_gray(object):
 
 def sizeof_fmt(num: float, suffix="B"):
     """by Fred Cirera,  https://stackoverflow.com/a/1094933/1870254, modified"""
+
     for unit in ["", "Ki", "Mi", "Gi", "Ti", "Pi", "Ei", "Zi"]:
         if abs(num) < 1024.0:
             return "%3.1f %s%s" % (num, unit, suffix)
@@ -101,6 +102,8 @@ def sizeof_fmt(num: float, suffix="B"):
 
 
 def sizetorch(value):
+    """function to return size of objects"""
+
     try:
         return sys.getsizeof(value.storage())
     except:
@@ -113,6 +116,8 @@ def preprocess(
     output_filepath: str = config.OUTPUT_FILEPATH,
     maxperclass: int = config.MAX_PER_CLASS,
 ) -> None:
+    """Performs preprocessing operations and transformations on the data"""
+
     classes = [name for name in os.listdir(path) if os.path.isdir(os.path.join(path, name))]
     classes = np.sort(classes)
     class_map = {name: c for c, name in enumerate(classes)}
@@ -150,7 +155,7 @@ def preprocess(
         all_images_gray512[c, :, :, :] = img_gray512
 
     if plotsample:
-        figpath = "reports/figures"
+        figpath = config.FIG_PATH
         if not os.path.isdir(figpath):
             os.makedirs(figpath)
         for number in range(5):
@@ -248,7 +253,7 @@ def main():
     plotsample = args.plotsample
 
     download_extract(zip_file_url, PATH, filename, foldername)
-    path = "data/raw/COVID19_Pneumonia_Normal_Chest_Xray_PA_Dataset"
+    path = config.RAW_DATA
     print("plotsample:", plotsample)
     preprocess(path, plotsample=plotsample, maxperclass=maxperclass)
 
