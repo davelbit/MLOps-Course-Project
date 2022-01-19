@@ -12,6 +12,7 @@
 # Module: This module is responsible for prediction
 ######################################################################
 
+import logging
 import os
 from typing import List
 
@@ -24,6 +25,8 @@ from torch import nn
 from tqdm import tqdm
 
 import wandb
+
+log = logging.getLogger(__name__)
 
 
 def get_model_from_checkpoint(path: str) -> nn.Module:
@@ -83,15 +86,15 @@ def inference(model: nn.Module = None, load_model: bool = False) -> None:
     BATCH_SIZE = 1
     N_WORKERS = config.N_WORKERS
 
-    VAL_PATHS = {
-        "images": BASE_DIR + config.TEST_PATHS.images,
-        "labels": BASE_DIR + config.TEST_PATHS.labels,
+    VALID_PATHS = {
+        "images": BASE_DIR + config.VALID_PATHS.images,
+        "labels": BASE_DIR + config.VALID_PATHS.labels,
     }
 
-    print("[INFO] Load dataset from disk...")
-    validation_set = Dataset_fetcher(VAL_PATHS["images"], VAL_PATHS["labels"])
+    log.info("[INFO] Load dataset from disk...")
+    validation_set = Dataset_fetcher(VALID_PATHS["images"], VALID_PATHS["labels"])
 
-    print("[INFO] Prepare dataloader...")
+    log.info("[INFO] Prepare dataloader...")
     validationloader = torch.utils.data.DataLoader(
         validation_set, shuffle=False, num_workers=N_WORKERS, batch_size=BATCH_SIZE
     )
@@ -145,25 +148,16 @@ def inference(model: nn.Module = None, load_model: bool = False) -> None:
                         correct_pred[classes[label]] += 1
                     total_pred[classes[label]] += 1
 
-    print("[INFO] Calculating model performance...")
+    log.info("[INFO] Calculating model performance...")
     for classname, correct_count in correct_pred.items():
         accuracy = 100 * float(correct_count) / total_pred[classname]
-        print(f"Accuracy for classes:  {classname} is {accuracy:.1f} %")
+        log.info(f"Accuracy for classes:  {classname} is {accuracy:.1f} %")
 
-    print(
+    log.info(
         f"\nAccuracy of the network on the {total} validation images: {100 * correct // total} %\n"
     )
 
 
 if __name__ == "__main__":
 
-    # this path must be adapted to your own machine
-    root_dir = os.getcwd() + "/"  # "/home/davidparham/Workspaces/DTU/MLOps/project/"
-
-    # TODO: Validation files need to be created
-    VAL_PATHS = {
-        "images": root_dir + "data/preprocessed/covid_not_norm/valid_images.pt",
-        "labels": root_dir + "data/preprocessed/covid_not_norm/valid_labels.pt",
-    }
-
-    inference(VAL_PATHS, load_model=True)
+    inference(load_model=True)

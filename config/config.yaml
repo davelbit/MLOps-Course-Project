@@ -19,6 +19,6 @@ TEST_PATHS:
   images: "/data/preprocessed/covid_not_norm/test_images.pt"
   labels:  "/data/preprocessed/covid_not_norm/test_labels.pt"
 
-VAL_PATHS:
+VALID_PATHS:
   images: "/data/preprocessed/covid_not_norm/valid_images.pt"
   labels:  "/data/preprocessed/covid_not_norm/valid_labels.pt"
