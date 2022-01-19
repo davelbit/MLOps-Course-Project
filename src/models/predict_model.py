@@ -154,8 +154,8 @@ if __name__ == "__main__":
 
     # TODO: Validation files need to be created
     VAL_PATHS = {
-        "images": root_dir + "data/preprocessed/covid_not_norm/test_images.pt",
-        "labels": root_dir + "data/preprocessed/covid_not_norm/test_labels.pt",
+        "images": root_dir + "data/preprocessed/covid_not_norm/valid_images.pt",
+        "labels": root_dir + "data/preprocessed/covid_not_norm/valid_labels.pt",
     }
 
     inference(VAL_PATHS, load_model=True)
