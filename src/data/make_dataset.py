@@ -6,6 +6,7 @@ import logging
 import os
 import sys
 import zipfile
+from distutils.command import config
 from pathlib import Path
 
 # import cv2
@@ -16,20 +17,23 @@ import requests
 import torch
 import torchvision
 from dotenv import find_dotenv, load_dotenv
+from omegaconf import OmegaConf
 from PIL import Image
 from sklearn.model_selection import train_test_split
 from tqdm import tqdm
 
-url = "https://data.mendeley.com/public-files/datasets/jctsfj2sfn/files/148dd4e7-636b-404b-8a3c-6938158bc2c0/file_downloaded"
+config = OmegaConf.load("config/data.yaml")
+
+url = config.URL
 
 
 def download_extract(
     zip_file_url: str,
     PATH,
-    filename: str = "covid19-pneumonia-normal-chest-xraypa-dataset.zip",
-    foldername: str = "COVID19_Pneumonia_Normal_Chest_Xray_PA_Dataset",
-    chunk_size: int = 1024,
-):
+    filename: str = config.FILENAME,
+    foldername: str = config.FOLDERNAME,
+    chunk_size: int = config.CHUNK_SIZE,
+) -> None:
     """
     Script to download dataset zip into raw folder
     zip_file_url : url to download file from
@@ -69,6 +73,8 @@ def download_extract(
 
 
 class check_size_and_gray(object):
+    """Class to check the shape and size of the images"""
+
     def __init__(self, transform):
         self.transform = transform
 
@@ -103,10 +109,10 @@ def sizetorch(value):
 
 def preprocess(
     path: str,
-    plotsample: bool = False,
-    output_filepath: str = "data/preprocessed/covid_not_norm/",
-    maxperclass: int = 10000,
-):
+    plotsample: bool = config.PLOT_SAMPLE,
+    output_filepath: str = config.OUTPUT_FILEPATH,
+    maxperclass: int = config.MAX_PER_CLASS,
+) -> None:
     classes = [name for name in os.listdir(path) if os.path.isdir(os.path.join(path, name))]
     classes = np.sort(classes)
     class_map = {name: c for c, name in enumerate(classes)}
@@ -210,7 +216,8 @@ def main():
     """Runs data processing scripts to turn raw data from (../raw) into
     cleaned data ready to be analyzed (saved in ../processed).
     """
-    parser = argparse.ArgumentParser(description="Data dwonloading and unzipping arguments")
+
+    parser = argparse.ArgumentParser(description="Data downloading and unzipping arguments")
     parser.add_argument(
         "--url",
         type=str,
