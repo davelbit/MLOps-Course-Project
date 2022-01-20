@@ -15,8 +15,10 @@
 import os
 import time
 
+import kornia as K
 import numpy as np
 import torch
+import torchvision
 from cloud_functions import uploadModelwithTimestamp
 from dataset_fetcher import Dataset_fetcher
 from model_architecture import XrayClassifier
@@ -64,6 +66,16 @@ def train() -> None:
     }
 
     print("[INFO] Load datasets from disk...")
+
+    data_aug = torchvision.transforms.Compose(
+        [
+            K.augmentation.RandomHorizontalFlip(p=0.5),
+            K.augmentation.RandomSharpness(p=0.5),
+            K.augmentation.RandomGaussianNoise(p=0.2),
+            K.augmentation.RandomThinPlateSpline(p=0.2),
+        ]
+    )
+
     training_set = Dataset_fetcher(TRAIN_PATHS["images"], TRAIN_PATHS["labels"])
     testing_set = Dataset_fetcher(TEST_PATHS["images"], TEST_PATHS["labels"])
 
