@@ -13,6 +13,11 @@ COPY requirements_local.txt requirements_local.txt
 COPY setup.py setup.py
 RUN pip install -r requirements_local.txt --no-cache-dir
 
+##Copy and install dependencies to downlaod dataset
+COPY req_downlaod.txt req_downlaod.txt
+RUN pip install -r req_downlaod.txt --no-cache-dir
+RUN pip install dvc[gs]
+
 ## download dataset raw into docker image
 ## that wa we dont have to download it every time we pull the data
 ## downside big docker image...
