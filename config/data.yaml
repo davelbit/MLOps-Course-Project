@@ -14,3 +14,8 @@ FIG_PATH: "reports/figures"
 RAW_DATA: "data/raw/COVID19_Pneumonia_Normal_Chest_Xray_PA_Dataset"
 VALIDATION_SPLIT: 0.4
 SEED: 42
+
+IMAGE_CHARACTERISTICS:
+
+MEAN: 0.2258
+STD: 0.5093

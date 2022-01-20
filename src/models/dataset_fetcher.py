@@ -62,3 +62,16 @@ if __name__ == "__main__":
     dataset = Dataset_fetcher(TRAIN_PATHS["images"], TRAIN_PATHS["labels"])
     dataloader = DataLoader(dataset, shuffle=False, num_workers=4, batch_size=3)
     image, label = next(iter(dataloader))
+    mean = 0.0
+    std = 0.0
+    nb_samples = 0.0
+    for images, _ in dataloader:
+        batch_samples = images.size(0)
+        data = images.view(batch_samples, images.size(1), -1)
+        mean += data.mean(2).sum(0)
+        std += data.std(2).sum(0)
+        nb_samples += batch_samples
+
+    mean /= nb_samples
+    std /= nb_samples
+    print(mean, std)

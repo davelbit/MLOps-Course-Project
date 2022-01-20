@@ -115,9 +115,10 @@ def sizetorch(value):
 def kornia_preprocess(i):
     init_image = Image.open(i)
     torch_image = transforms.ToTensor()(init_image).unsqueeze_(0)
-    # torch_image = K.utils.image_to_tensor(init_image22, keepdim=True)
     ki = K.geometry.transform.resize(torch_image, (512, 512), antialias=False)
-    tensor_to_pil = transforms.ToPILImage()(ki.squeeze_(0))
+    norm_image = K.enhance.normalize(ki, torch.Tensor([config.MEAN]), torch.Tensor([config.STD]))
+    tensor_to_pil = transforms.ToPILImage()(norm_image.squeeze_(0))
+
     return tensor_to_pil
 
 
