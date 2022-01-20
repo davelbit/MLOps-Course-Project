@@ -1,5 +1,6 @@
 google-cloud-storage==1.44.0
 hydra-core==1.1.1
+kornia==0.6.2
 matplotlib==3.5.0
 numpy==1.21.2
 omegaconf==2.1.1

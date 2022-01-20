@@ -25,6 +25,7 @@ from model_architecture import XrayClassifier
 from omegaconf import OmegaConf
 from torch import nn, optim
 
+import matplotlib.pyplot as plt
 import wandb
 
 
@@ -106,7 +107,6 @@ def train() -> None:
 
         for images, labels in trainloader:
             optimizer.zero_grad(set_to_none=True)
-
             output = model(images)
             loss = criterion(output, labels)
 
