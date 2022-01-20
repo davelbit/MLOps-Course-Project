@@ -9,7 +9,7 @@
 # Semester:    Spring 2022
 # Institution:  Technical University of Denmark (DTU)
 #
-# Module: This module is responsible accessing our data
+# Module: This module is used to train the model
 ######################################################################
 
 import os
@@ -154,8 +154,8 @@ def train() -> None:
         if val_loss < best_val:
             best_val = val_loss
             print("\n[INFO] Saving new best_model...\n")
-            if not os.path.isdir('/'.join(config.BEST_MODEL_PATH.split('/')[:-1])):
-                os.makedirs('/'.join(config.BEST_MODEL_PATH.split('/')[:-1]))
+            if not os.path.isdir("/".join(config.BEST_MODEL_PATH.split("/")[:-1])):
+                os.makedirs("/".join(config.BEST_MODEL_PATH.split("/")[:-1]))
             torch.save(
                 {
                     "epoch": epoch + 1,

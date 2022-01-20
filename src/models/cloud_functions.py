@@ -1,9 +1,12 @@
-from google.cloud import storage
-from datetime import datetime
-import torch
 import io
+from datetime import datetime
+from typing import Any
 
-def upload_blob(bucket_name, source_file_name, destination_blob_name):
+import torch
+from google.cloud import storage
+
+
+def upload_blob(bucket_name: str, source_file_name: str, destination_blob_name: str) -> None:
     """Uploads a file to the bucket."""
     # The ID of your GCS bucket
     # bucket_name = "your-bucket-name"
@@ -21,7 +24,7 @@ def upload_blob(bucket_name, source_file_name, destination_blob_name):
     print("File {} uploaded to {}.".format(source_file_name, destination_blob_name))
 
 
-def uploadModelwithTimestamp(config):
+def uploadModelwithTimestamp(config) -> None:
     print("[INFO] Uploading best model...")
     now = datetime.now()
     timestamp = now.strftime("D%d%m%YT%H%M%S")
@@ -29,7 +32,7 @@ def uploadModelwithTimestamp(config):
     upload_blob(config.BUCKET_NAME, config.BEST_MODEL_PATH, best_model_gcp_path)
 
 
-def loadCheckpointFromGCP(config):
+def loadCheckpointFromGCP(config) -> Any:
     BUCKET_NAME = config.BUCKET_NAME
     MODEL_FILE = config.BUCKET_BEST_MODEL
 
