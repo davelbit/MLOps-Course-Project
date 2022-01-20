@@ -20,6 +20,34 @@ import torchvision.transforms as transforms
 from omegaconf import OmegaConf
 from torch.utils.data import DataLoader, Dataset
 
+import kornia as K
+import torchvision
+
+
+class korniaGray2RGB(object):
+    def __call__(self, img):
+
+        return K.color.grayscale_to_rgb(img)
+
+
+class korniaRGB2Gray(object):
+    def __call__(self, img):
+
+        return K.color.rgb_to_grayscale(img)
+
+
+data_aug = torchvision.transforms.Compose(
+    [
+        korniaGray2RGB(),
+        K.augmentation.RandomHorizontalFlip(p=0.2),
+        K.augmentation.RandomVerticalFlip(p=0.2),
+        K.augmentation.RandomSharpness(sharpness=0.5, p=0.2),
+        K.augmentation.RandomGaussianNoise(mean=0.0, std=0.01, p=0.1),
+        K.augmentation.RandomThinPlateSpline(scale=0.2, p=0.2),
+        korniaRGB2Gray(),
+    ]
+)
+
 
 # TODO: Write tests for this module
 class Dataset_fetcher(Dataset):
@@ -27,7 +55,7 @@ class Dataset_fetcher(Dataset):
         self,
         PATH_IMG: str,
         PATH_LAB: str,
-        transform: Union[transforms.transforms.Compose, None] = None,
+        transform: Union[transforms.transforms.Compose, None] = data_aug,
     ) -> None:
 
         self.images = torch.load(PATH_IMG)
@@ -41,7 +69,7 @@ class Dataset_fetcher(Dataset):
         if self.transform:
             image = self.transform(image)
 
-        return image, label
+        return image.view(-1, 512, 512), label
 
     def __len__(self) -> int:
         return len(self.images)

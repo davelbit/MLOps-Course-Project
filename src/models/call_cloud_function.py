@@ -6,19 +6,19 @@ from torch import nn
 import requests
 
 
-img=np.random.normal(0,1,[512,512])
+img = np.random.normal(0, 1, [512, 512])
 
-x={'input_data':img.tolist(),'model-id':"models/D19012022T170140best_model.pth"}
+x = {"input_data": img.tolist(), "model-id": "models/D19012022T170140best_model.pth"}
 
-y= json.dumps(x)
+y = json.dumps(x)
 
-request_json=json.loads(y)
-data = torch.tensor(request_json['input_data'])
+request_json = json.loads(y)
+data = torch.tensor(request_json["input_data"])
 
-url='https://europe-west1-charged-city-337910.cloudfunctions.net/COVID'
+url = "https://europe-west1-charged-city-337910.cloudfunctions.net/COVID"
 
-r=requests.post(url,json=y)
-print( r.text)
+r = requests.post(url, json=y)
+print(r.text)
 
 
 from google.cloud import storage
@@ -29,6 +29,7 @@ import omegaconf
 import io
 from datetime import datetime
 
+
 def loadCheckpointFromGCP(config):
     BUCKET_NAME = config.BUCKET_NAME
     MODEL_FILE = config.BUCKET_BEST_MODEL
@@ -38,6 +39,7 @@ def loadCheckpointFromGCP(config):
     blob = bucket.get_blob(MODEL_FILE)
     checkpoint = torch.load(io.BytesIO(blob.download_as_string()))
     return checkpoint
+
 
 def get_model_from_checkpoint(
     config: omegaconf.dictconfig.DictConfig, cloudModel: bool = True
@@ -56,18 +58,21 @@ def get_model_from_checkpoint(
     model.load_state_dict(checkpoint["model_state_dict"])
     return model
 
+
 def predict_covid(request):
     config = OmegaConf.load("config/config.yaml")
-    request_json=json.loads(request)
-    if request_json and 'input_data' in request_json:
-        if 'model-id' in request_json:
-            config.BUCKET_BEST_MODEL=request_json['model-id']
+    request_json = json.loads(request)
+    if request_json and "input_data" in request_json:
+        if "model-id" in request_json:
+            config.BUCKET_BEST_MODEL = request_json["model-id"]
 
         model = get_model_from_checkpoint(config)
 
-        data = torch.tensor(request_json['input_data'])
-        assert data.shape[-2:]==torch.Size([512, 512])
-        data=data.view(-1,1,512,512)
-        prediction=model(data)
+        data = torch.tensor(request_json["input_data"])
+        assert data.shape[-2:] == torch.Size([512, 512])
+        data = data.view(-1, 1, 512, 512)
+        prediction = model(data)
         print(prediction)
+
+
 predict_covid(y)
