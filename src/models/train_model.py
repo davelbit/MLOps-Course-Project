@@ -12,17 +12,19 @@
 # Module: This module is responsible accessing our data
 ######################################################################
 
+# from asyncio.log import logger
 import os
+from statistics import mode
 import time
 
 import numpy as np
 import torch
-from cloud_functions import uploadModelwithTimestamp
+# from cloud_functions import uploadModelwithTimestamp
 from dataset_fetcher import Dataset_fetcher
 from model_architecture import XrayClassifier
 from omegaconf import OmegaConf
 from torch import nn, optim
-
+import logging
 import wandb
 
 
@@ -38,7 +40,34 @@ def train() -> None:
     # Load config file
     config = OmegaConf.load(BASE_DIR + "/config/config.yaml")
 
-    # Initialize logging with wandb and track conf settings
+    # Initialize logger, logging with wandb and track conf settings
+    train_logger = logging.getLogger("train_logger")
+    test_logger = logging.getLogger("test_logger")
+    val_logger = logging.getLogger("val_logger")
+    train_handler = logging.FileHandler(BASE_DIR + config.TRAIN_PATHS.logs, delay = True)
+    test_handler = logging.FileHandler(BASE_DIR + config.TEST_PATHS.logs)
+    val_handler = logging.FileHandler(BASE_DIR + config.VAL_PATHS.logs)
+    
+    train_log_format = logging.Formatter("Trainer: %(message)s")
+    test_log_format = logging.Formatter("Tester: %(message)s")
+    val_log_format = logging.Formatter("valer: %(message)s")
+    train_handler.setFormatter(train_log_format)
+    test_handler.setFormatter(test_log_format)
+    val_handler.setFormatter(val_log_format)
+
+    train_logger.addHandler(train_handler)
+    test_logger.addHandler(test_handler)
+    val_logger.addHandler(val_handler)
+
+    train_logger.setLevel(logging.DEBUG)
+    test_logger.setLevel(logging.DEBUG)
+    val_logger.setLevel(logging.DEBUG)
+
+    def print_all_logs(msg):
+        train_logger.debug(msg)
+        test_logger.debug(msg)
+        val_logger.debug(msg)
+
     WANDB_API = os.getenv("WANDB_API")
     wandb.login(key=WANDB_API)
     wandb.init(project="MLOps-Project", config=dict(config))
@@ -63,6 +92,8 @@ def train() -> None:
         "labels": BASE_DIR + config.TEST_PATHS.labels,
     }
 
+    print_all_logs("Initialized all configrations.")
+
     print("[INFO] Load datasets from disk...")
     training_set = Dataset_fetcher(TRAIN_PATHS["images"], TRAIN_PATHS["labels"])
     testing_set = Dataset_fetcher(TEST_PATHS["images"], TEST_PATHS["labels"])
@@ -75,13 +106,19 @@ def train() -> None:
         testing_set, shuffle=False, num_workers=N_WORKERS, batch_size=BATCH_SIZE
     )
 
+    print_all_logs("Dataset loaded.")
+
     print("[INFO] Building network...")
     model = XrayClassifier(num_classes=3, dropout_probability=DROPOUT_PROBABILITY)
     wandb.watch(model, log_freq=100)
 
+    print_all_logs("Model created.")
+
     criterion = nn.CrossEntropyLoss()
     optimizer = optim.Adam(model.parameters(), lr=LEARNING_RATE)
 
+    print_all_logs("Optimizer and loss initialized.")
+    train_logger.debug("Starting Training.")
     print("[INFO] Started training the model...\n")
     start_t = time.time()
     for epoch in range(EPOCHS):
@@ -118,6 +155,8 @@ def train() -> None:
             f"Epoch {epoch+1}/{EPOCHS} \n \tTraining:  "
             f" Loss={train_loss:.2f}\t Accuracy={train_acc}%\t"
         )
+        train_logger.debug(f"Epoch {epoch+1}/{EPOCHS}")
+        train_logger.debug("Training: Loss={train_loss:.2f}\t Accuracy={train_acc}%\t")
         # Training Loop End
 
         with torch.no_grad():
@@ -146,6 +185,9 @@ def train() -> None:
         wandb.log({"val_loss": val_loss})
         wandb.log({"val_acc": val_acc})
 
+        test_logger.debug({"val_loss": val_loss})
+        test_logger.debug({"val_acc": val_acc})
+
         print(f"\tValidation: Loss={val_loss:.2f}\t Accuracy={val_acc}%\t")
 
         # Evaluation loop end
@@ -164,7 +206,7 @@ def train() -> None:
                 },
                 config.BEST_MODEL_PATH,
             )
-
+            val_logger.debug(f"epochs = {epoch + 1}, validation loss: {best_val}")
         # Save model based on the frequency defined by "args.save_after"
         if (epoch + 1) % 5 == 0:
             print(f"\n[INFO] Saving model as checkpoint -> epoch_{epoch+1}.pth\n")

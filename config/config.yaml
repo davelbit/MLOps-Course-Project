@@ -25,13 +25,7 @@ TEST_PATHS:
   labels:  "/data/preprocessed/covid_not_norm/test_labels.pt"
   logs: "/logs/test.log"
 
-<<<<<<< HEAD
 VAL_PATHS:
   images: "/data/preprocessed/covid_not_norm/train_images.pt"
   labels:  "/data/preprocessed/covid_not_norm/train_labels.pt"
-  logs: "/logsvalidation.log"
-=======
-VALID_PATHS:
-  images: "/data/preprocessed/covid_not_norm/valid_images.pt"
-  labels:  "/data/preprocessed/covid_not_norm/valid_labels.pt"
->>>>>>> 45aa26b00f6357325eb38f48a4b14222fedf238c
+  logs: "/logs/validation.log"
