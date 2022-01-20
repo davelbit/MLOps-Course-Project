@@ -1,0 +1,28 @@
+#config.yaml
+
+EPOCHS: 10
+BATCH_SIZE: 32
+LEARNING_RATE: 1e-4
+DROPOUT_PROBABILITY: 0.2
+
+N_WORKERS: 2
+BEST_VAL: 100000000
+
+BEST_MODEL_PATH: "models/checkpoints/best_model.pth"
+CHECKPOINT_PATH: "models/checkpoints/"
+
+BUCKET_NAME: "mlops_dtu_covid_project"
+BUCKET_PATH: "models/"
+BUCKET_BEST_MODEL: "models/D19012022T170140best_model.pth"
+
+TRAIN_PATHS:
+  images: "/data/preprocessed/covid_not_norm/train_images.pt"
+  labels:  "/data/preprocessed/covid_not_norm/train_labels.pt"
+
+TEST_PATHS:
+  images: "/data/preprocessed/covid_not_norm/test_images.pt"
+  labels:  "/data/preprocessed/covid_not_norm/test_labels.pt"
+
+VALID_PATHS:
+  images: "/data/preprocessed/covid_not_norm/valid_images.pt"
+  labels:  "/data/preprocessed/covid_not_norm/valid_labels.pt"
