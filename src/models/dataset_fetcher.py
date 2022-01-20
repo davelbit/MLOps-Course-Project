@@ -64,9 +64,8 @@ if __name__ == "__main__":
     image, label = next(iter(dataloader))
 
 
-
-def mean_and_std():
-    ''' This function calculates the mean and standard deviation of the dataset'''
+def mean_and_std() -> None:
+    """This function calculates the mean and standard deviation of the dataset"""
 
     dataset = Dataset_fetcher(TRAIN_PATHS["images"], TRAIN_PATHS["labels"])
     dataloader = DataLoader(dataset, shuffle=False, num_workers=4, batch_size=3)
@@ -84,5 +83,6 @@ def mean_and_std():
     mean /= nb_samples
     std /= nb_samples
     print(mean, std)
-    
+
+
 mean_and_std()

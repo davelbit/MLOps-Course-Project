@@ -42,7 +42,7 @@ class XrayClassifier(nn.Module):
 
         self.fc = nn.Linear(in_features=48 * 256 * 256, out_features=num_classes)
 
-    def forward(self, x):
+    def forward(self, x: torch.Tensor) -> torch.Tensor:
         """Forward pass of the model"""
         x = self.conv1(x)
         x = self.bn1(x)
