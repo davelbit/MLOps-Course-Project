@@ -9,6 +9,8 @@ import zipfile
 from distutils.command import config
 from pathlib import Path
 
+import kornia as K
+
 # import cv2
 # import kornia as K
 import matplotlib.pyplot as plt
@@ -20,8 +22,8 @@ from dotenv import find_dotenv, load_dotenv
 from omegaconf import OmegaConf
 from PIL import Image
 from sklearn.model_selection import train_test_split
+from torchvision import transforms
 from tqdm import tqdm
-
 
 config = OmegaConf.load("config/data.yaml")
 url = config.URL
@@ -110,6 +112,15 @@ def sizetorch(value):
         return sys.getsizeof(value)
 
 
+def kornia_preprocess(i):
+    init_image = Image.open(i)
+    torch_image = transforms.ToTensor()(init_image).unsqueeze_(0)
+    # torch_image = K.utils.image_to_tensor(init_image22, keepdim=True)
+    ki = K.geometry.transform.resize(torch_image, (512, 512), antialias=False)
+    tensor_to_pil = transforms.ToPILImage()(ki.squeeze_(0))
+    return tensor_to_pil
+
+
 def preprocess(
     path: str,
     plotsample: bool = config.PLOT_SAMPLE,
@@ -143,7 +154,9 @@ def preprocess(
     gray_resize_transform_norm = torchvision.transforms.Compose(
         [
             torchvision.transforms.ToTensor(),
-            torchvision.transforms.Resize((512, 512)),
+            # torchvision.transforms.Resize((512, 512)),
+            # K.augmentation.RandomSharpness(sharpness=0.5, p=0.5),
+            # K.augmentation.RandomHorizontalFlip(p=0.5),
             check_size_and_gray(torchvision.transforms.Grayscale(num_output_channels=1))
             # ,torchvision.transforms.Normalize(0,1)
         ]
@@ -151,7 +164,8 @@ def preprocess(
 
     print(plotsample)
     for c, i in enumerate(tqdm(img_paths)):
-        img_gray512 = gray_resize_transform_norm(Image.open(i))
+        tensor_to_pil = kornia_preprocess(i)
+        img_gray512 = gray_resize_transform_norm(tensor_to_pil)
         all_images_gray512[c, :, :, :] = img_gray512
 
     if plotsample:
@@ -167,8 +181,8 @@ def preprocess(
             plt.savefig(figpath + "/" + "sample" + str(number) + ".png")
             del samples
 
-    validation_split = 0.4
-    seed = 42
+    validation_split = config.VALIDATION_SPLIT
+    seed = config.SEED
     train_indices, test_indices, _, _ = train_test_split(
         range(len(all_images_gray512)),
         labels,
@@ -250,7 +264,7 @@ def main():
     filename = args.NAME
     foldername = args.exdir
     maxperclass = args.maxperclass
-    plotsample = args.plotsample
+    plotsample = config.PLOT_SAMPLE
 
     download_extract(zip_file_url, PATH, filename, foldername)
     path = config.RAW_DATA

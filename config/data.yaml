@@ -4,7 +4,13 @@ FILENAME: "covid19-pneumonia-normal-chest-xraypa-dataset.zip"
 FOLDERNAME: "COVID19_Pneumonia_Normal_Chest_Xray_PA_Dataset"
 CHUNK_SIZE: 1024
 
-PREPROCES:
+PREPROCESS:
 PLOT_SAMPLE: False,
 OUTPUT_FILEPATH: "data/preprocessed/covid_not_norm/"
 MAX_PER_CLASS: 10000
+
+OTHERS:
+FIG_PATH: "reports/figures"
+RAW_DATA: "data/raw/COVID19_Pneumonia_Normal_Chest_Xray_PA_Dataset"
+VALIDATION_SPLIT: 0.4
+SEED: 42
