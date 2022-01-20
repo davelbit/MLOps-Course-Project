@@ -1,10 +1,10 @@
 import argparse
-
-import numpy as np
-import matplotlib.pyplot as plt
-from google.cloud import storage
 import os
+
+import matplotlib.pyplot as plt
+import numpy as np
 import torch
+from google.cloud import storage
 
 """
 JOB_NAME=test_job6
@@ -27,7 +27,7 @@ docker build --build-arg WANDB_TOKEN='77fd84d04670fb6689468a55cc459483104ce350' 
 """
 
 
-def run():
+def run() -> None:
     parser = argparse.ArgumentParser(description="model running arguments")
     parser.add_argument(
         "-e",
@@ -102,7 +102,7 @@ def run():
     upload_blob(bucket_name, source_file_name, destination_blob_name)
 
 
-def upload_blob(bucket_name, source_file_name, destination_blob_name):
+def upload_blob(bucket_name: str, source_file_name: str, destination_blob_name: str) -> None:
     """Uploads a file to the bucket."""
     # The ID of your GCS bucket
     # bucket_name = "your-bucket-name"
