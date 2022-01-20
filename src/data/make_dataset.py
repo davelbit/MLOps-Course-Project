@@ -1,18 +1,14 @@
 # -*- coding: utf-8 -*-
 import argparse
 
-# import io
 import logging
 import os
 import sys
 import zipfile
 from distutils.command import config
 from pathlib import Path
-
+from PIL import Image
 import kornia as K
-
-# import cv2
-# import kornia as K
 import matplotlib.pyplot as plt
 import numpy as np
 import requests
@@ -31,7 +27,7 @@ url = config.URL
 
 def download_extract(
     zip_file_url: str,
-    PATH,
+    PATH :str,
     filename: str = config.FILENAME,
     foldername: str = config.FOLDERNAME,
     chunk_size: int = config.CHUNK_SIZE,
@@ -112,15 +108,16 @@ def sizetorch(value):
         return sys.getsizeof(value)
 
 
-def kornia_preprocess(i):
-    init_image = Image.open(i)
-    torch_image = transforms.ToTensor()(init_image).unsqueeze_(0)
-    ki = K.geometry.transform.resize(torch_image, (512, 512), antialias=False)
-    norm_image = K.enhance.normalize(ki, torch.Tensor([config.MEAN]), torch.Tensor([config.STD]))
-    tensor_to_pil = transforms.ToPILImage()(norm_image.squeeze_(0))
+def kornia_preprocess(pil_image: Image.Image) -> Image.Image:
+    '''This module performs preprocessing using Kornia and pytorch'''
+
+    init_image = Image.open(pil_image) #Opening PIL image
+    image_tensor = transforms.ToTensor()(init_image).unsqueeze_(0) #Transform PIL to Tensor
+    resized_tensor = K.geometry.transform.resize(image_tensor, (512, 512), antialias=False) #resizing using Kornia
+    norm_image = K.enhance.normalize(resized_tensor, torch.Tensor([config.MEAN]), torch.Tensor([config.STD])) #normalizing
+    tensor_to_pil = transforms.ToPILImage()(norm_image.squeeze_(0)) #Transform Tensor to PIL
 
     return tensor_to_pil
-
 
 def preprocess(
     path: str,
@@ -163,7 +160,6 @@ def preprocess(
         ]
     )
 
-    print(plotsample)
     for c, i in enumerate(tqdm(img_paths)):
         tensor_to_pil = kornia_preprocess(i)
         img_gray512 = gray_resize_transform_norm(tensor_to_pil)
