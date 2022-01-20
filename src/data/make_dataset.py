@@ -1,13 +1,12 @@
 # -*- coding: utf-8 -*-
 import argparse
-
 import logging
 import os
 import sys
 import zipfile
 from distutils.command import config
 from pathlib import Path
-from PIL import Image
+
 import kornia as K
 import matplotlib.pyplot as plt
 import numpy as np
@@ -27,7 +26,7 @@ url = config.URL
 
 def download_extract(
     zip_file_url: str,
-    PATH :str,
+    PATH: str,
     filename: str = config.FILENAME,
     foldername: str = config.FOLDERNAME,
     chunk_size: int = config.CHUNK_SIZE,
@@ -109,15 +108,20 @@ def sizetorch(value):
 
 
 def kornia_preprocess(pil_image: Image.Image) -> Image.Image:
-    '''This module performs preprocessing using Kornia and pytorch'''
+    """This module performs preprocessing using Kornia and pytorch"""
 
-    init_image = Image.open(pil_image) #Opening PIL image
-    image_tensor = transforms.ToTensor()(init_image).unsqueeze_(0) #Transform PIL to Tensor
-    resized_tensor = K.geometry.transform.resize(image_tensor, (512, 512), antialias=False) #resizing using Kornia
-    norm_image = K.enhance.normalize(resized_tensor, torch.Tensor([config.MEAN]), torch.Tensor([config.STD])) #normalizing
-    tensor_to_pil = transforms.ToPILImage()(norm_image.squeeze_(0)) #Transform Tensor to PIL
+    init_image = Image.open(pil_image)  # Opening PIL image
+    image_tensor = transforms.ToTensor()(init_image).unsqueeze_(0)  # Transform PIL to Tensor
+    resized_tensor = K.geometry.transform.resize(
+        image_tensor, (512, 512), antialias=False
+    )  # resizing using Kornia
+    norm_image = K.enhance.normalize(
+        resized_tensor, torch.Tensor([config.MEAN]), torch.Tensor([config.STD])
+    )  # normalizing
+    tensor_to_pil = transforms.ToPILImage()(norm_image.squeeze_(0))  # Transform Tensor to PIL
 
     return tensor_to_pil
+
 
 def preprocess(
     path: str,
@@ -149,21 +153,33 @@ def preprocess(
 
     all_images_gray512 = torch.empty([len(img_paths), 1, 512, 512])
 
-    gray_resize_transform_norm = torchvision.transforms.Compose(
+    rgb_to_gray = torchvision.transforms.Compose(
         [
             torchvision.transforms.ToTensor(),
-            # torchvision.transforms.Resize((512, 512)),
-            # K.augmentation.RandomSharpness(sharpness=0.5, p=0.5),
             # K.augmentation.RandomHorizontalFlip(p=0.5),
+            # K.colour.rgb_to_grayscale
             check_size_and_gray(torchvision.transforms.Grayscale(num_output_channels=1))
             # ,torchvision.transforms.Normalize(0,1)
         ]
     )
 
+    data_aug = torchvision.transforms.Compose(
+        [
+            K.augmentation.RandomHorizontalFlip(p=0.5),
+            K.augmentation.RandomSharpness(p=0.5),
+            K.augmentation.RandomGaussianNoise(p=0.2),
+            K.augmentation.RandomThinPlateSpline(p=0.2),
+        ]
+    )
+
     for c, i in enumerate(tqdm(img_paths)):
         tensor_to_pil = kornia_preprocess(i)
-        img_gray512 = gray_resize_transform_norm(tensor_to_pil)
-        all_images_gray512[c, :, :, :] = img_gray512
+        img_gray512 = rgb_to_gray(tensor_to_pil)
+        test1 = K.color.grayscale_to_rgb(img_gray512)
+        transf1 = data_aug(test1)
+        tensor_to_pil = transforms.ToPILImage()(transf1.squeeze_(0))
+        back1 = rgb_to_gray(tensor_to_pil)
+        all_images_gray512[c, :, :, :] = back1
 
     if plotsample:
         figpath = config.FIG_PATH

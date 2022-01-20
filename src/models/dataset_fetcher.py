@@ -67,6 +67,14 @@ if __name__ == "__main__":
 def mean_and_std() -> None:
     """This function calculates the mean and standard deviation of the dataset"""
 
+    ##Code is redundant from the above class. Needs to be fixed
+    BASE_DIR = os.getcwd()
+    config = OmegaConf.load(BASE_DIR + "/config/config.yaml")
+    TRAIN_PATHS = {
+        "images": BASE_DIR + config.TRAIN_PATHS.images,
+        "labels": BASE_DIR + config.TRAIN_PATHS.labels,
+    }
+
     dataset = Dataset_fetcher(TRAIN_PATHS["images"], TRAIN_PATHS["labels"])
     dataloader = DataLoader(dataset, shuffle=False, num_workers=4, batch_size=3)
     mean = 0.0
