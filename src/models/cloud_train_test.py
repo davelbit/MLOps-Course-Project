@@ -15,10 +15,10 @@ gcloud ai-platform jobs submit training ${JOB_NAME} \
 """
 
 """
-JOB_NAME=train5
+JOB_NAME=train6
 gcloud ai-platform jobs submit training ${JOB_NAME} \
   --region=europe-west1 \
-  --master-image-uri=gcr.io/charged-city-337910/project:latest \
+  --master-image-uri=gcr.io/charged-city-337910/train:latest \
   --config=config/gcloud_ai_config.yaml
 """
 
