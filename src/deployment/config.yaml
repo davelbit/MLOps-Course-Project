@@ -1,6 +1,6 @@
 #config.yaml
 
-EPOCHS: 100
+EPOCHS: 10
 BATCH_SIZE: 32
 LEARNING_RATE: 1e-4
 DROPOUT_PROBABILITY: 0.2
@@ -18,14 +18,11 @@ BUCKET_BEST_MODEL: "models/D19012022T170140best_model.pth"
 TRAIN_PATHS:
   images: "/data/preprocessed/covid_not_norm/train_images.pt"
   labels:  "/data/preprocessed/covid_not_norm/train_labels.pt"
-  logs: "/logs/train.log"
 
 TEST_PATHS:
   images: "/data/preprocessed/covid_not_norm/test_images.pt"
   labels:  "/data/preprocessed/covid_not_norm/test_labels.pt"
-  logs: "/logs/test.log"
 
-VAL_PATHS:
-  images: "/data/preprocessed/covid_not_norm/train_images.pt"
-  labels:  "/data/preprocessed/covid_not_norm/train_labels.pt"
-  logs: "/logs/validation.log"
+VALID_PATHS:
+  images: "/data/preprocessed/covid_not_norm/valid_images.pt"
+  labels:  "/data/preprocessed/covid_not_norm/valid_labels.pt"

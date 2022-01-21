@@ -9,7 +9,7 @@
 # Semester:    Spring 2022
 # Institution:  Technical University of Denmark (DTU)
 #
-# Module: This module is responsible accessing our data
+# Module: This module is used to train the model
 ######################################################################
 
 # from asyncio.log import logger
@@ -17,14 +17,17 @@ import os
 from statistics import mode
 import time
 
+import kornia as K
 import numpy as np
 import torch
-# from cloud_functions import uploadModelwithTimestamp
+import torchvision
+from cloud_functions import uploadModelwithTimestamp
 from dataset_fetcher import Dataset_fetcher
 from model_architecture import XrayClassifier
 from omegaconf import OmegaConf
 from torch import nn, optim
 import logging
+import matplotlib.pyplot as plt
 import wandb
 
 
@@ -95,6 +98,16 @@ def train() -> None:
     print_all_logs("Initialized all configrations.")
 
     print("[INFO] Load datasets from disk...")
+
+    data_aug = torchvision.transforms.Compose(
+        [
+            K.augmentation.RandomHorizontalFlip(p=0.5),
+            K.augmentation.RandomSharpness(p=0.5),
+            K.augmentation.RandomGaussianNoise(p=0.2),
+            K.augmentation.RandomThinPlateSpline(p=0.2),
+        ]
+    )
+
     training_set = Dataset_fetcher(TRAIN_PATHS["images"], TRAIN_PATHS["labels"])
     testing_set = Dataset_fetcher(TEST_PATHS["images"], TEST_PATHS["labels"])
 
@@ -131,7 +144,6 @@ def train() -> None:
 
         for images, labels in trainloader:
             optimizer.zero_grad(set_to_none=True)
-
             output = model(images)
             loss = criterion(output, labels)
 
@@ -196,8 +208,8 @@ def train() -> None:
         if val_loss < best_val:
             best_val = val_loss
             print("\n[INFO] Saving new best_model...\n")
-            if not os.path.isdir('/'.join(config.BEST_MODEL_PATH.split('/')[:-1])):
-                os.makedirs('/'.join(config.BEST_MODEL_PATH.split('/')[:-1]))
+            if not os.path.isdir("/".join(config.BEST_MODEL_PATH.split("/")[:-1])):
+                os.makedirs("/".join(config.BEST_MODEL_PATH.split("/")[:-1]))
             torch.save(
                 {
                     "epoch": epoch + 1,

@@ -137,7 +137,7 @@ def inference(model: nn.Module = None, load_model: bool = False) -> None:
 
                 # Generate prediction
                 output = model(images)
-
+                print(images.shape)
                 # Predicted class value
                 _, predicted = torch.max(output.data, 1)
 

@@ -9,3 +9,4 @@ availableSecrets:
   secretManager:
   - versionName: projects/303765552416/secrets/wandb/versions/latest
     env: DBTOKEN
+timeout: 720s
