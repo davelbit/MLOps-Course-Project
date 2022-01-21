@@ -16,6 +16,10 @@ import torch
 from torch import nn
 
 
+def dummy_func():
+    pass
+
+
 class XrayClassifier(nn.Module):
     """Model Architecture"""
 
