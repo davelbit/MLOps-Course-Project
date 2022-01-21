@@ -197,8 +197,9 @@ def train() -> None:
         wandb.log({"val_loss": val_loss})
         wandb.log({"val_acc": val_acc})
 
-        test_logger.debug({"val_loss": val_loss})
-        test_logger.debug({"val_acc": val_acc})
+        test_logger.debug(f"Epoch : {epoch}")
+        test_logger.debug(f"val_loss: {val_loss}")
+        test_logger.debug({f"val_acc: {val_acc}\n")
 
         print(f"\tValidation: Loss={val_loss:.2f}\t Accuracy={val_acc}%\t")
 
